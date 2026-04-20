@@ -1,0 +1,113 @@
+/* ChartWrapper.css — scoped styles for the ChartWrapper component */
+
+.chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.chart-wrapper__header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.chart-wrapper__title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #F1F5F9;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.chart-wrapper__subtitle {
+  font-size: 11px;
+  color: #94A3B8;
+  margin: 0;
+}
+
+/* ── Chart box ───────────────────────────────────────────────────────────── */
+.chart-wrapper__box {
+  position: relative;
+  background: linear-gradient(145deg, #1E293B 0%, #0F172A 100%);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 16px;
+  padding: 24px;
+  overflow: hidden;
+}
+
+/* Subtle top-border accent */
+.chart-wrapper__box::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, #6C63FF 0%, #22D3EE 100%);
+  opacity: 0.5;
+}
+
+.chart-wrapper__canvas {
+  position: relative;
+  width: 100%;
+}
+
+/* ── States ──────────────────────────────────────────────────────────────── */
+.chart-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 200px;
+}
+
+/* Loading */
+.chart-state--loading .spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(108, 99, 255, 0.2);
+  border-top-color: #6C63FF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.chart-state--loading p {
+  font-size: 13px;
+  color: #94A3B8;
+  margin: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error */
+.chart-state--error .error-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.chart-state--error p {
+  font-size: 13px;
+  color: #EF4444;
+  margin: 0;
+  text-align: center;
+  max-width: 260px;
+}
+
+/* Empty */
+.chart-state--empty .empty-icon {
+  font-size: 28px;
+  line-height: 1;
+  opacity: 0.5;
+}
+
+.chart-state--empty p {
+  font-size: 13px;
+  color: #475569;
+  margin: 0;
+  text-align: center;
+}
