@@ -1,10 +1,6 @@
 # 🛠️ Local Development Environment Setup Guide
 
 **Project:** ExpenseIQ  
-**Author:** Shivangi Girjesh Pandey  
-**Role:** Backend Support & QA  
-**Date:** April 20, 2026
-
 ---
 
 ## Tools Required
@@ -13,7 +9,7 @@
 |------|---------|---------|
 | Node.js | v20.19.6 (LTS) | JavaScript runtime for backend |
 | npm | 10.8.2 | Package manager |
-| MongoDB Compass | v1.x | GUI for MongoDB database |
+| MongoDB Compass | latest | GUI for MongoDB database |
 | VS Code | Latest | Code editor |
 | Git | 2.50.1.windows.1 | Version control |
 | Postman | Latest | API testing |
@@ -52,7 +48,10 @@ git --version
 - Recommended Extensions:
   - ESLint
   - Thunder Client (optional, for API testing inside VS Code)
+
   ![Eslint extension ](image-2.png)
+
+
   ![Thunder bolt ](image-3.png)
 ---
 
@@ -61,6 +60,18 @@ git --version
 - Create a free account and set up a new Workspace: **ExpenseIQ**
 
 ![Postman](image-4.png)
+---
+7. Project Readiness Validation
+
+After installing the required tools, verify the environment is ready for project setup:
+
+VS Code launches successfully
+MongoDB Compass opens and accepts local connection
+Postman launches and workspace is accessible
+Terminal recognizes Node.js, npm, and Git commands
+
+This ensures the machine is prepared for cloning the repository, installing dependencies, and running the project locally.
+
 ---
 ## ✅ Setup Checklist
 
