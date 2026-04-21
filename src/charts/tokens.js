@@ -5,29 +5,29 @@
  */
 
 export const COLORS = {
-  primary: '#6C63FF',       // purple – main data series
-  primaryAlpha: 'rgba(108, 99, 255, 0.15)',
-  secondary: '#F97316',     // orange – secondary data series
-  secondaryAlpha: 'rgba(249, 115, 22, 0.15)',
-  accent: '#22D3EE',        // cyan – tertiary / highlight
-  accentAlpha: 'rgba(34, 211, 238, 0.15)',
+  primary: '#0F3460',
+  primaryAlpha: 'rgba(15, 52, 96, 0.15)',
+  secondary: '#3178C6',
+  secondaryAlpha: 'rgba(49, 120, 198, 0.15)',
+  accent: '#2B9348',
+  accentAlpha: 'rgba(43, 147, 72, 0.15)',
 
   success: '#10B981',
   warning: '#FBBF24',
   danger: '#EF4444',
 
   // Text
-  textPrimary: '#F1F5F9',
-  textSecondary: '#94A3B8',
-  textMuted: '#475569',
+  textPrimary: '#EEF4FF',
+  textSecondary: '#B6C7DD',
+  textMuted: '#7E92AD',
 
   // Grid / structure
-  gridLine: 'rgba(148, 163, 184, 0.12)',
-  border: 'rgba(148, 163, 184, 0.2)',
+  gridLine: 'rgba(182, 199, 221, 0.12)',
+  border: 'rgba(182, 199, 221, 0.2)',
 
   // Chart background
-  chartBg: '#0F172A',
-  tooltipBg: '#1E293B',
+  chartBg: '#0D1A2D',
+  tooltipBg: '#102038',
 };
 
 export const TYPOGRAPHY = {

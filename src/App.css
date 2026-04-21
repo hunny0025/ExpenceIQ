@@ -1,33 +1,9 @@
-/* App.css — global styles for the ExpenseIQ demo */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* App.css — dashboard layout styles */
 
 /* ── Reset / base ──────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --bg-base:     #080E1A;
-  --bg-surface:  #0F172A;
-  --bg-elevated: #1E293B;
-  --primary:     #6C63FF;
-  --secondary:   #F97316;
-  --accent:      #22D3EE;
-  --text-1:      #F1F5F9;
-  --text-2:      #94A3B8;
-  --text-3:      #475569;
-  --radius-lg:   20px;
-  --radius-md:   12px;
-  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --transition:  0.25s ease;
-}
-
-html, body, #root {
-  min-height: 100vh;
-  background-color: var(--bg-base);
-  color: var(--text-1);
-  font-family: 'Inter', system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
+html, body, #root { -webkit-font-smoothing: antialiased; }
 
 /* ── App layout ───────────────────────────────────────────────────────────── */
 .app {
@@ -210,6 +186,11 @@ html, body, #root {
   flex-wrap: wrap;
 }
 
+.controls-search {
+  max-width: 420px;
+  margin-bottom: 14px;
+}
+
 .demo-controls__label {
   font-size: 12px;
   font-weight: 600;
@@ -220,23 +201,9 @@ html, body, #root {
 }
 
 .demo-btn {
-  padding: 6px 16px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 500;
-  font-family: inherit;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: transparent;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: all var(--transition);
-}
-
-.demo-btn:hover,
-.demo-btn.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
+  min-width: 88px;
 }
 
 /* ── Section divider ──────────────────────────────────────────────────────── */

@@ -79,14 +79,13 @@ export default function ChartWrapper({
   className = '',
 }) {
   const ChartComponent = CHART_COMPONENTS[type];
+  // Memoize merged options so downstream memo comparisons stay stable
+  const mergedOptions = useMemo(() => options, [options]);
 
   if (!ChartComponent) {
     console.error(`[ChartWrapper] Unsupported type: "${type}". Use "line" or "bar".`);
     return <ErrorState message={`Unsupported chart type: ${type}`} />;
   }
-
-  // Memoize merged options so downstream memo comparisons stay stable
-  const mergedOptions = useMemo(() => options, [options]);
 
   // ── Determine content ────────────────────────────────────────────────────
 

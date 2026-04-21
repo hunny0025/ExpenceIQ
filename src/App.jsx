@@ -13,6 +13,7 @@ import { useState } from 'react';
 import './App.css';
 
 import { ChartWrapper, buildLineOptions, buildBarOptions } from './charts';
+import { Badge, Button, Card, Input } from './components/ui';
 import {
   monthlySpendingData,
   categoryBreakdownData,
@@ -50,7 +51,7 @@ export default function App() {
           <div className="navbar__brand-icon" aria-hidden="true">💡</div>
           ExpenseIQ
         </a>
-        <span className="navbar__badge">Analytics</span>
+        <Badge>Analytics</Badge>
       </nav>
 
       {/* ── Main ── */}
@@ -69,30 +70,34 @@ export default function App() {
         {/* KPI strip */}
         <section aria-label="Key metrics" className="kpi-strip">
           {KPIs.map((k) => (
-            <div key={k.label} className="kpi-card">
+            <Card key={k.label} className="kpi-card">
               <p className="kpi-card__label">{k.label}</p>
               <p className="kpi-card__value">{k.value}</p>
               <p className={`kpi-card__delta kpi-card__delta--${k.dir}`}>
                 {k.delta} vs last year
               </p>
               <span className="kpi-card__accent" aria-hidden="true">{k.emoji}</span>
-            </div>
+            </Card>
           ))}
         </section>
 
         {/* ── Demo controls ── */}
+        <div className="controls-search">
+          <Input label="Quick filter" placeholder="Search category, month, or metric..." />
+        </div>
         <div className="demo-controls" role="group" aria-label="Chart display state demo">
           <span className="demo-controls__label">Demo state:</span>
           {STATES.map((s) => (
-            <button
+            <Button
               key={s}
               id={`demo-btn-${s}`}
-              className={`demo-btn${demoState === s ? ' active' : ''}`}
+              variant={demoState === s ? 'secondary' : 'ghost'}
+              className="demo-btn"
               onClick={() => setDemoState(s)}
               aria-pressed={demoState === s}
             >
               {s.charAt(0).toUpperCase() + s.slice(1)}
-            </button>
+            </Button>
           ))}
         </div>
 

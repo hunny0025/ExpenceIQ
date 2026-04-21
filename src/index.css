@@ -1,10 +1,43 @@
-/* index.css — minimal global reset; App.css owns all design tokens */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import './components/ui/ui.css';
 
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-body {
+:root {
+  --color-primary: #0F3460;
+  --color-accent: #2B9348;
+
+  --bg-base: #08111f;
+  --surface-1: #102038;
+  --surface-2: #0d1a2d;
+
+  --text-primary: #eef4ff;
+  --text-secondary: #b6c7dd;
+  --text-muted: #7e92ad;
+  --border-soft: rgba(182, 199, 221, 0.2);
+  --danger: #ef4444;
+
+  /* Backward-compatible aliases for existing dashboard/chart styles */
+  --primary: var(--color-primary);
+  --accent: var(--color-accent);
+  --secondary: #3178c6;
+  --text-1: var(--text-primary);
+  --text-2: var(--text-secondary);
+  --text-3: var(--text-muted);
+  --bg-surface: var(--surface-2);
+  --bg-elevated: var(--surface-1);
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --transition: 0.25s ease;
+}
+
+html, body, #root {
+  min-height: 100vh;
   margin: 0;
   padding: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
 }
