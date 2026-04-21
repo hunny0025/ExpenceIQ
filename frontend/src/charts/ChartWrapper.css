@@ -1,0 +1,131 @@
+/* ═══════════════════════════════════════════════════════════════
+   ChartWrapper.css — scoped styles for the ChartWrapper component
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Root card ─────────────────────────────────────────────────── */
+.chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+.chart-wrapper__header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chart-wrapper__title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #f9fafb;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.chart-wrapper__subtitle {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── Chart box ─────────────────────────────────────────────────── */
+.chart-wrapper__box {
+  position: relative;
+  background: linear-gradient(160deg, #1f2937 0%, #111827 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.chart-wrapper__box:hover {
+  box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.25),
+              0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Top accent line */
+.chart-wrapper__box::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, #7c3aed 0%, #10b981 100%);
+  opacity: 0.6;
+}
+
+/* ── Canvas container ──────────────────────────────────────────── */
+.chart-wrapper__canvas {
+  position: relative;
+  width: 100%;
+}
+
+/* ── Shared state container ────────────────────────────────────── */
+.chart-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 200px;
+  padding: 2rem;
+}
+
+/* ── Loading state ─────────────────────────────────────────────── */
+.chart-state--loading .spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(124, 58, 237, 0.2);
+  border-top-color: #7c3aed;
+  border-radius: 50%;
+  animation: cw-spin 0.75s linear infinite;
+}
+
+.chart-state--loading p {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+@keyframes cw-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Error state ───────────────────────────────────────────────── */
+.chart-state--error {
+  background: rgba(244, 63, 94, 0.05);
+  border-radius: 0.75rem;
+}
+
+.chart-state--error .error-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.chart-state--error p {
+  font-size: 0.8125rem;
+  color: #f43f5e;
+  margin: 0;
+  text-align: center;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+/* ── Empty state ───────────────────────────────────────────────── */
+.chart-state--empty .empty-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  opacity: 0.35;
+}
+
+.chart-state--empty p {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin: 0;
+  text-align: center;
+}

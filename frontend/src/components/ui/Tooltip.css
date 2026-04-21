@@ -1,0 +1,70 @@
+/* ═══════════════════════════════════════════════════════════════
+   Tooltip.css — styles for the Tooltip component
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Wrapper (inline, positions the bubble) ─────────────────────── */
+.tooltip-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ── Bubble ──────────────────────────────────────────────────────── */
+.tooltip-bubble {
+  position: absolute;
+  z-index: 9999;
+  background: #1f2937;
+  color: #f3f4f6;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  pointer-events: none;
+  white-space: normal;
+  word-break: break-word;
+  animation: tooltip-in 0.12s ease;
+}
+
+@keyframes tooltip-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+
+/* ── Placement offsets ──────────────────────────────────────────── */
+.tooltip-bubble--top {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-bubble--bottom {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-bubble--left {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip-bubble--right {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ── Arrow ───────────────────────────────────────────────────────── */
+.tooltip-arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #1f2937;
+  border: 1px solid rgba(255,255,255,0.10);
+  /* Individual sides will be clipped by the bubble — arrow uses the same bg */
+}
