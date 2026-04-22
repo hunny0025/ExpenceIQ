@@ -27,7 +27,7 @@ const protect = async (req, res, next) => {
       }
 
       next();
-    } catch (error) {
+    } catch (_error) {
       res.status(401);
       next(new Error('Not authorized — invalid token'));
     }
