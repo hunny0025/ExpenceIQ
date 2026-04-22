@@ -107,6 +107,13 @@ git push origin main
 **Fix:** Ask your team lead for the `.env` file. Never commit `.env` to GitHub.
 
 ---
+## ✅ Local Run Verification
+
+| Service | Status | URL |
+|---------|--------|-----|
+| Backend API | ✅ Running | http://localhost:5000 |
+| Frontend | ✅ Running | http://localhost:5173 |
+| MongoDB Atlas | ✅ Connected | Atlas Cloud |
 
 ## 🛠️ Tech Stack
 
