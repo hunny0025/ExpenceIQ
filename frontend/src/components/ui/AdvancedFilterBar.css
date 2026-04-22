@@ -1,0 +1,353 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AdvancedFilterBar — dark-theme filter bar for ExpenceIQ
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Root container ─────────────────────────────────────────────── */
+.afb-root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  padding: 1rem 1.25rem;
+  background: var(--color-bg-card, #1f2937);
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-lg, 1rem);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Field group ────────────────────────────────────────────────── */
+.afb-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.afb-field--grow {
+  flex: 1 1 180px;
+}
+
+.afb-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary, #9ca3af);
+  user-select: none;
+}
+
+/* ── Shared input base ──────────────────────────────────────────── */
+.afb-input,
+.afb-select {
+  appearance: none;
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: var(--color-text-primary, #f9fafb);
+  background: var(--color-bg-secondary, #111827);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md, 0.75rem);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.afb-input:focus,
+.afb-select:focus {
+  border-color: var(--color-accent-violet, #7c3aed);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.22);
+}
+
+/* ── Select dropdown arrow ──────────────────────────────────────── */
+.afb-select {
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239ca3af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 10px 6px;
+  cursor: pointer;
+}
+
+.afb-select option {
+  background: #111827;
+  color: #f9fafb;
+}
+
+/* ── Multi-select (category) ────────────────────────────────────── */
+.afb-multiselect {
+  position: relative;
+}
+
+.afb-multiselect__trigger {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  min-height: 2.15rem;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: var(--color-text-primary, #f9fafb);
+  background: var(--color-bg-secondary, #111827);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md, 0.75rem);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.afb-multiselect__trigger:focus-within,
+.afb-multiselect__trigger--open {
+  border-color: var(--color-accent-violet, #7c3aed);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.22);
+}
+
+.afb-multiselect__placeholder {
+  color: var(--color-text-secondary, #6b7280);
+  font-size: 0.8rem;
+}
+
+.afb-multiselect__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  white-space: nowrap;
+  user-select: none;
+  animation: afb-chipIn 0.15s ease;
+}
+
+@keyframes afb-chipIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.afb-multiselect__chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  font-size: 0.65rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.afb-multiselect__chip-remove:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.afb-multiselect__dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 0.3rem;
+  background: #1a2332;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md, 0.75rem);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  animation: afb-dropIn 0.15s ease;
+}
+
+@keyframes afb-dropIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.afb-multiselect__option {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: var(--color-text-primary, #f9fafb);
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.afb-multiselect__option:hover {
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.afb-multiselect__option--selected {
+  background: rgba(124, 58, 237, 0.18);
+}
+
+.afb-multiselect__check {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.6rem;
+  transition: all 0.15s ease;
+}
+
+.afb-multiselect__check--active {
+  background: var(--color-accent-violet, #7c3aed);
+  border-color: var(--color-accent-violet, #7c3aed);
+  color: #fff;
+}
+
+.afb-multiselect__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+/* ── Range slider (dual-thumb via two overlaid native inputs) ──── */
+.afb-range {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.afb-range__values {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #9ca3af);
+  font-variant-numeric: tabular-nums;
+}
+
+.afb-range__values span {
+  color: var(--color-accent-emerald, #10b981);
+  font-weight: 600;
+}
+
+.afb-range__track {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.afb-range__fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #7c3aed, #10b981);
+  pointer-events: none;
+  transition: left 0.05s ease, right 0.05s ease;
+}
+
+.afb-range__slider {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+  margin: 0;
+  padding: 0;
+  height: 6px;
+}
+
+/* Webkit thumb */
+.afb-range__slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f9fafb;
+  border: 2px solid var(--color-accent-violet, #7c3aed);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  cursor: grab;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.afb-range__slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.2), 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.afb-range__slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+}
+
+/* Firefox thumb */
+.afb-range__slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f9fafb;
+  border: 2px solid var(--color-accent-violet, #7c3aed);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.afb-range__slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.2), 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.afb-range__slider::-moz-range-track {
+  background: transparent;
+  border: none;
+}
+
+/* ── Date range inline (uses existing DateRangePicker).
+   Just provide small sizing context ────────────────────────────── */
+.afb-field--date {
+  flex: 1 1 240px;
+}
+
+/* ── Reset button ───────────────────────────────────────────────── */
+.afb-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--color-accent-rose, #f43f5e);
+  background: rgba(244, 63, 94, 0.08);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  border-radius: var(--radius-md, 0.75rem);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-end;
+  white-space: nowrap;
+}
+
+.afb-reset:hover {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: rgba(244, 63, 94, 0.35);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .afb-root {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .afb-field--grow {
+    flex-basis: auto;
+  }
+}

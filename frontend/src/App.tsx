@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChartWrapper, buildLineOptions, buildBarOptions, COLORS } from './charts';
-import { CategoryTag, AmountBadge, DateRangePicker, Tooltip } from './components/ui';
+import { CategoryTag, AmountBadge, DateRangePicker, Tooltip, AdvancedFilterBar, createDefaultFilters } from './components/ui';
+import type { FilterState } from './components/ui';
 import type { ChartData } from 'chart.js';
 
 // ── Demo data ──────────────────────────────────────────────────────────────────
@@ -46,6 +47,7 @@ const barData: ChartData<'bar'> = {
 export default function App() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate,   setEndDate]   = useState<Date | null>(null);
+  const [filters, setFilters]     = useState<FilterState>(createDefaultFilters());
 
   const handleDateChange = (s: Date | null, e: Date | null) => {
     setStartDate(s);
@@ -154,6 +156,46 @@ export default function App() {
           </div>
 
         </div>
+      </section>
+
+      {/* ── Task 3: AdvancedFilterBar ────────────────────────────── */}
+      <section style={{ marginTop: '2.5rem' }}>
+        <h2 style={{ color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem' }}>
+          Task 3 — Advanced Filter Bar
+        </h2>
+
+        <AdvancedFilterBar
+          filters={filters}
+          onChange={setFilters}
+          amountBounds={[0, 5000]}
+        />
+
+        {/* Live state output */}
+        <pre
+          style={{
+            marginTop: '1rem',
+            padding: '1rem 1.25rem',
+            background: '#111827',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '0.75rem',
+            fontSize: '0.75rem',
+            color: '#9ca3af',
+            overflowX: 'auto',
+            lineHeight: 1.6,
+          }}
+        >
+          <span style={{ color: '#7c3aed', fontWeight: 600 }}>FilterState</span>
+          {' = '}
+          {JSON.stringify(
+            {
+              ...filters,
+              dateStart: filters.dateStart?.toISOString().slice(0, 10) ?? null,
+              dateEnd:   filters.dateEnd?.toISOString().slice(0, 10) ?? null,
+            },
+            null,
+            2,
+          )}
+        </pre>
       </section>
     </div>
   );

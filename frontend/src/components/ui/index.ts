@@ -10,3 +10,12 @@ export type { DateRangePickerProps }  from './DateRangePicker';
 
 export { default as Tooltip }        from './Tooltip';
 export type { TooltipProps, TooltipPlacement } from './Tooltip';
+
+export { default as AdvancedFilterBar, createDefaultFilters } from './AdvancedFilterBar';
+export type {
+  AdvancedFilterBarProps,
+  FilterState,
+  SortOption,
+  SortField,
+  SortDirection,
+} from './AdvancedFilterBar';
