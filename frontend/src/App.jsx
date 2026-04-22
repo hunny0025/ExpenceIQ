@@ -1,14 +1,16 @@
+/* eslint-disable no-unused-vars */
 import { Routes, Route, Navigate } from 'react-router-dom'
 
-// Pages — to be built in Day 3–7
+// Pages — to be implemented in Day 3–7 by Mehul & Kavinraj
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
 import ExpensesPage from './pages/ExpensesPage.jsx'
 import BudgetPage from './pages/BudgetPage.jsx'
 import AnalyticsPage from './pages/AnalyticsPage.jsx'
+/* eslint-enable no-unused-vars */
 
-// Auth guard placeholder — full implementation in context (Day 3)
+// Auth guard — checks localStorage token; full context added in Day 3
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token')
   return token ? children : <Navigate to="/login" replace />
@@ -17,11 +19,11 @@ function PrivateRoute({ children }) {
 export default function App() {
   return (
     <Routes>
-      {/* Public routes */}
+      {/* Public */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* Private routes */}
+      {/* Private */}
       <Route path="/" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
       <Route path="/expenses" element={<PrivateRoute><ExpensesPage /></PrivateRoute>} />
       <Route path="/budget" element={<PrivateRoute><BudgetPage /></PrivateRoute>} />
