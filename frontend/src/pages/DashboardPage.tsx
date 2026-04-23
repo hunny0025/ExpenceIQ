@@ -26,13 +26,16 @@ export default function DashboardPage() {
           </p>
         </div>
         
-        <button style={{ 
-          display: 'flex', alignItems: 'center', gap: '8px', 
-          background: '#7c3aed', color: 'white', border: 'none',
-          padding: '12px 24px', borderRadius: '16px', fontWeight: 800,
-          fontSize: '14px', cursor: 'pointer', transition: 'all 0.3s',
-          boxShadow: '0 8px 24px rgba(124, 58, 237, 0.3)'
-        }}>
+        <button 
+          aria-label="Add a new expense transaction"
+          style={{ 
+            display: 'flex', alignItems: 'center', gap: '8px', 
+            background: '#7c3aed', color: 'white', border: 'none',
+            padding: '12px 24px', borderRadius: '16px', fontWeight: 800,
+            fontSize: '14px', cursor: 'pointer', transition: 'all 0.3s',
+            boxShadow: '0 8px 24px rgba(124, 58, 237, 0.3)'
+          }}
+        >
           <Plus size={20} strokeWidth={3} />
           <span>Add Expense</span>
         </button>
@@ -94,11 +97,14 @@ export default function DashboardPage() {
             </div>
             <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: 'white' }}>Financial Goals</h3>
             <p style={{ margin: '12px 0 24px', color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px' }}>Set a target and save faster.</p>
-            <button style={{ 
-              width: '100%', background: 'white', color: '#7c3aed', border: 'none',
-              padding: '14px', borderRadius: '14px', fontWeight: 800, fontSize: '13px',
-              cursor: 'pointer'
-            }}>
+            <button 
+              aria-label="Set a new financial goal"
+              style={{ 
+                width: '100%', background: 'white', color: '#7c3aed', border: 'none',
+                padding: '14px', borderRadius: '14px', fontWeight: 800, fontSize: '13px',
+                cursor: 'pointer'
+              }}
+            >
               Set New Goal
             </button>
           </div>

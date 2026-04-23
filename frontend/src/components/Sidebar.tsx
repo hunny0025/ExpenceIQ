@@ -71,6 +71,7 @@ export default function Sidebar() {
 
         <button
           onClick={handleLogout}
+          aria-label="Sign out of your account"
           style={{
             marginTop: '16px', width: '100%', background: 'transparent', border: '1px solid transparent',
             color: '#6b7280', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center',
