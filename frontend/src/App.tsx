@@ -6,6 +6,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 const LoginPage     = lazy(() => import('./pages/LoginPage'));
 const SignupPage    = lazy(() => import('./pages/SignupPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const ExpensesPage  = lazy(() => import('./pages/ExpensesPage'));
+const BudgetPage    = lazy(() => import('./pages/BudgetPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 
 // Full-screen spinner shown while a lazy chunk is loading
 function PageLoader() {
@@ -38,18 +41,15 @@ export default function App() {
         <Route path="/signup" element={<SignupPage />} />
 
         {/* Protected routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/expenses"  element={<ProtectedRoute><ExpensesPage /></ProtectedRoute>} />
+        <Route path="/budget"    element={<ProtectedRoute><BudgetPage /></ProtectedRoute>} />
+        <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
 
-        {/* Catch-all: redirect to /login */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* Catch-all: redirect to /dashboard if logged in, else /login */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Suspense>
   );
 }
+
