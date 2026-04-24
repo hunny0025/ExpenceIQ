@@ -114,12 +114,12 @@ jobs:
           name: frontend-dist
           path: frontend/dist
 
-      # Install LHCI CLI directly — runs on Node 24, no action wrapper needed
-      - name: Install Lighthouse CI CLI
-        run: npm install -g @lhci/cli@latest
+      # Install LHCI CLI + http-server (needed by lighthouserc.cjs startServerCommand)
+      - name: Install Lighthouse CI CLI and http-server
+        run: npm install -g @lhci/cli@latest http-server
 
       - name: Run Lighthouse CI
-        run: lhci autorun --config=./lighthouserc.cjs
+        run: lhci autorun
 
   # ─────────────────────────────────────────────────────
   # 4. Deploy to Vercel (staging branch → preview)
