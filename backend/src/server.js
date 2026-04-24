@@ -1,3 +1,7 @@
+// ⚠️  Sentry MUST be the very first require so it can instrument all modules
+require('./sentry');
+const Sentry = require('@sentry/node');
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -71,6 +75,10 @@ app.get('/api/health', (req, res) => {
 // Error Handling
 // ---------------------
 const { notFound, errorHandler } = require('./middleware/error.middleware');
+// Sentry error handler — must come BEFORE any other error middleware
+if (process.env.SENTRY_DSN) {
+  Sentry.setupExpressErrorHandler(app);
+}
 app.use(notFound);
 app.use(errorHandler);
 
