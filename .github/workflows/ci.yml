@@ -73,6 +73,13 @@ jobs:
         env:
           VITE_API_URL: https://api.expenseiq.app/api
 
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: ./frontend/dist
+          retention-days: 1
+
   # ─────────────────────────────────
   # Lighthouse Performance Audit
   # ─────────────────────────────────
@@ -91,11 +98,11 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install & build frontend
-        working-directory: ./frontend
-        run: |
-          npm install
-          npm run build
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: ./frontend/dist
 
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v11
