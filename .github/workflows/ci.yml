@@ -5,10 +5,10 @@ on:
     branches: [main, develop, staging]
   pull_request:
     branches: [main, staging]
+  workflow_dispatch:
 
 env:
   NODE_VERSION: '22'
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   # ─────────────────────────────────
