@@ -1,3 +1,5 @@
+// ExpenseIQ — Database Seeder
+// Verified staging pipeline
 /**
  *  ExpenseIQ — Database Seeder
  *  File: backend/src/utils/seeder.js
