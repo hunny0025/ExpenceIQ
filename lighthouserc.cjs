@@ -1,8 +1,12 @@
 module.exports = {
   ci: {
     collect: {
-      staticDistDir: './frontend/dist',
+      startServerCommand: 'npx serve -s ./frontend/dist -p 4711',
+      url: ['http://localhost:4711/'],
       numberOfRuns: 3,
+      settings: {
+        chromeFlags: '--no-sandbox --disable-gpu --headless',
+      },
     },
     assert: {
       assertions: {
