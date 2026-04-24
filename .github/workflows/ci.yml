@@ -11,9 +11,9 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  # ─────────────────────────────────
-  # Backend Lint & Test
-  # ─────────────────────────────────
+  # ─────────────────────────────────────────────────────
+  # 1. Backend — Lint & Test
+  # ─────────────────────────────────────────────────────
   backend:
     name: Backend — Lint & Test
     runs-on: ubuntu-latest
@@ -29,6 +29,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
         run: npm install
@@ -43,9 +45,9 @@ jobs:
           JWT_SECRET: ci_test_secret_key
           MONGO_URI: mongodb://localhost:27017/expenseiq_test
 
-  # ─────────────────────────────────
-  # Frontend Lint & Build
-  # ─────────────────────────────────
+  # ─────────────────────────────────────────────────────
+  # 2. Frontend — Lint & Build
+  # ─────────────────────────────────────────────────────
   frontend:
     name: Frontend — Lint & Build
     runs-on: ubuntu-latest
@@ -61,6 +63,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         run: npm install
@@ -71,11 +75,20 @@ jobs:
       - name: Build for production
         run: npm run build
         env:
-          VITE_API_URL: https://api.expenseiq.app/api
+          VITE_API_URL: https://expenseiq-api.onrender.com/api
+          VITE_ENV: production
 
-  # ─────────────────────────────────
-  # Lighthouse Performance Audit
-  # ─────────────────────────────────
+      # Upload the built dist/ so the Lighthouse job can reuse it
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+          retention-days: 1
+
+  # ─────────────────────────────────────────────────────
+  # 3. Lighthouse Performance Audit (main & staging only)
+  # ─────────────────────────────────────────────────────
   lighthouse:
     name: Lighthouse Audit
     runs-on: ubuntu-latest
@@ -91,14 +104,77 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install & build frontend
-        working-directory: ./frontend
-        run: |
-          npm install
-          npm run build
+      # Download the pre-built dist instead of rebuilding
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
 
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v11
         with:
           configPath: ./lighthouserc.cjs
           uploadArtifacts: true
+
+  # ─────────────────────────────────────────────────────
+  # 4. Deploy to Vercel (staging branch → preview)
+  # ─────────────────────────────────────────────────────
+  deploy-preview:
+    name: Deploy — Vercel Preview
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    if: github.ref == 'refs/heads/staging'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel (Preview)
+        working-directory: ./frontend
+        run: |
+          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --token=${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  # ─────────────────────────────────────────────────────
+  # 5. Deploy to Vercel (main branch → production)
+  # ─────────────────────────────────────────────────────
+  deploy-production:
+    name: Deploy — Vercel Production
+    runs-on: ubuntu-latest
+    needs: [backend, frontend, lighthouse]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel (Production)
+        working-directory: ./frontend
+        run: |
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
