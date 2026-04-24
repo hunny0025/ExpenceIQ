@@ -4,7 +4,7 @@
  * Generic reusable wrapper for react-chartjs-2 charts with full state handling.
  *
  * Props:
- *  type       – 'line' | 'bar'              (default: 'line')
+ *  type       – 'line' | 'bar' | 'doughnut' | 'pie' (default: 'line')
  *  data       – Chart.js ChartData object
  *  options    – Chart.js options overrides
  *  loading    – boolean: show loading spinner
@@ -16,7 +16,7 @@
  */
 
 import { useMemo } from 'react';
-import { Line, Bar } from 'react-chartjs-2';
+import { Line, Bar, Doughnut, Pie } from 'react-chartjs-2';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyChartData    = any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,7 +27,7 @@ import './ChartWrapper.css';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type ChartType = 'line' | 'bar';
+export type ChartType = 'line' | 'bar' | 'doughnut' | 'pie';
 
 export interface ChartWrapperProps {
   type?:      ChartType;
@@ -82,8 +82,10 @@ function EmptyState() {
 // ─── Chart type registry ──────────────────────────────────────────────────────
 
 const CHART_COMPONENTS = {
-  line: Line,
-  bar:  Bar,
+  line:     Line,
+  bar:      Bar,
+  doughnut: Doughnut,
+  pie:      Pie,
 } as const;
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -106,7 +108,7 @@ export default function ChartWrapper({
   const mergedOptions = useMemo(() => options, [JSON.stringify(options)]);
 
   if (!ChartComponent) {
-    console.error(`[ChartWrapper] Unsupported chart type: "${type}". Use "line" or "bar".`);
+    console.error(`[ChartWrapper] Unsupported chart type: "${type}". Use "line", "bar", "doughnut", or "pie".`);
     return <ErrorState message={`Unsupported chart type: ${type}`} />;
   }
 
