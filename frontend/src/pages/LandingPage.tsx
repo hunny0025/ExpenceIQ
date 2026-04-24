@@ -145,7 +145,7 @@ export default function LandingPage() {
                 </div>
                 <span className="text-xl font-black text-white">ExpenceIQ</span>
               </div>
-              <p className="text-slate-500 text-sm max-w-xs font-medium">
+              <p className="text-slate-400 text-sm max-w-xs font-medium">
                 The world's most beautiful and intuitive expense management platform.
               </p>
             </div>
@@ -158,18 +158,18 @@ export default function LandingPage() {
               </div>
               <div className="flex flex-col gap-4">
                 <span className="text-white uppercase tracking-widest text-[10px]">Company</span>
-                <a href="#" className="text-slate-500 hover:text-white transition-colors">Privacy</a>
-                <a href="#" className="text-slate-500 hover:text-white transition-colors">Terms</a>
+                <a href="#" className="text-slate-400 hover:text-white transition-colors">Privacy</a>
+                <a href="#" className="text-slate-400 hover:text-white transition-colors">Terms</a>
               </div>
             </div>
           </div>
           
-          <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-600">
+          <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-400">
             <div>© 2024 ExpenceIQ. Built for the future of finance.</div>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-slate-400">Twitter</a>
-              <a href="#" className="hover:text-slate-400">GitHub</a>
-              <a href="#" className="hover:text-slate-400">Discord</a>
+              <a href="#" className="hover:text-slate-300">Twitter</a>
+              <a href="#" className="hover:text-slate-300">GitHub</a>
+              <a href="#" className="hover:text-slate-300">Discord</a>
             </div>
           </div>
         </div>
@@ -182,7 +182,7 @@ function StatItem({ label, value }: { label: string, value: string }) {
   return (
     <div className="space-y-1">
       <div className="text-3xl font-black text-white">{value}</div>
-      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{label}</div>
+      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</div>
     </div>
   );
 }
