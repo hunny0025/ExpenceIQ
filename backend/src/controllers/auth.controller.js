@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/User.model');
 
 /**
@@ -17,7 +18,7 @@ const register = async (req, res, next) => {
     }
 
     // Create user
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name, email, passwordHash: password });
 
     // Generate token
     const token = user.getSignedJwtToken();
@@ -52,8 +53,8 @@ const login = async (req, res, next) => {
       throw new Error('Please provide email and password');
     }
 
-    // Find user and include password for comparison
-    const user = await User.findOne({ email }).select('+password');
+    // Find user and include passwordHash for comparison
+    const user = await User.findOne({ email }).select('+passwordHash');
 
     if (!user) {
       res.status(401);
@@ -103,4 +104,61 @@ const getMe = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, getMe };
+/**
+ * @desc    Refresh access token
+ * @route   POST /api/auth/refresh
+ * @access  Public
+ */
+const refresh = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      res.status(400);
+      throw new Error('Please provide refresh token');
+    }
+
+    // Verify refresh token
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET);
+
+    // Find user
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      res.status(401);
+      throw new Error('User not found');
+    }
+
+    // Generate new access token
+    const token = user.getSignedJwtToken();
+
+    res.status(200).json({
+      success: true,
+      data: { token },
+    });
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      res.status(401);
+      throw new Error('Invalid or expired refresh token');
+    }
+    next(error);
+  }
+};
+
+/**
+ * @desc    Logout user
+ * @route   POST /api/auth/logout
+ * @access  Private
+ */
+const logout = async (req, res, next) => {
+  try {
+    res.status(200).json({
+      success: true,
+      data: {},
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, login, getMe, refresh, logout };

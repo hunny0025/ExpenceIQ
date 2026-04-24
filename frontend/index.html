@@ -8,7 +8,16 @@
     <meta name="description" content="Smart expense tracking and analytics dashboard" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div 
+        role="status"
+        aria-label="Loading ExpenceIQ"
+        style="height: 100vh; display: flex; align-items: center; justify-content: center; background: #030712;"
+      >
+        <div style="width: 40px; height: 40px; border: 3px solid rgba(124, 58, 237, 0.1); border-top-color: #7c3aed; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

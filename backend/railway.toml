@@ -1,0 +1,24 @@
+# ╔══════════════════════════════════╗
+# ║   Railway Deployment Config       ║
+# ╚══════════════════════════════════╝
+#
+# This file is used by Railway to deploy the backend service.
+# Set the environment variables in Railway's dashboard — NOT here.
+#
+# Railway auto-detects Node.js and runs:
+#   npm install → npm start
+#
+# Ensure the following env vars are set in Railway dashboard:
+#   NODE_ENV=production
+#   PORT=5000   (Railway injects $PORT automatically)
+#   MONGO_URI=mongodb+srv://...
+#   JWT_SECRET=...
+#   JWT_EXPIRE=7d
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

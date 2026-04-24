@@ -21,11 +21,11 @@ const userSchema = new mongoose.Schema(
         'Please provide a valid email',
       ],
     },
-    password: {
+    passwordHash: {
       type: String,
       required: [true, 'Please provide a password'],
       minlength: [6, 'Password must be at least 6 characters'],
-      select: false, // Don't return password by default
+      select: false,
     },
     currency: {
       type: String,
@@ -42,21 +42,18 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Index for faster queries
-userSchema.index({ email: 1 });
-
 // Hash password before saving
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('passwordHash')) return next();
 
   const salt = await bcrypt.genSalt(12);
-  this.password = await bcrypt.hash(this.password, salt);
+  this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
   next();
 });
 
 // Compare entered password with hashed password
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  return await bcrypt.compare(enteredPassword, this.passwordHash);
 };
 
 // Generate JWT token

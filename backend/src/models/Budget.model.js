@@ -2,12 +2,13 @@ const mongoose = require('mongoose');
 
 const budgetSchema = new mongoose.Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
+      index: true,
     },
-    category: {
+    categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
       required: [true, 'Please select a category'],
@@ -27,11 +28,6 @@ const budgetSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    spent: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
   },
   {
     timestamps: true,
@@ -39,16 +35,21 @@ const budgetSchema = new mongoose.Schema(
 );
 
 // Unique budget per user + category + month + year
-budgetSchema.index({ user: 1, category: 1, month: 1, year: 1 }, { unique: true });
+budgetSchema.index({ userId: 1, categoryId: 1, month: 1, year: 1 }, { unique: true });
+
+// Virtual for spent vs budget - calculated dynamically
+budgetSchema.virtual('spent').get(function () {
+  return 0; // Will be computed in controller with aggregation
+});
 
 // Virtual for remaining budget
 budgetSchema.virtual('remaining').get(function () {
-  return this.amount - this.spent;
+  return this.amount - (this.spent || 0);
 });
 
 // Virtual for percentage used
 budgetSchema.virtual('percentUsed').get(function () {
-  return Math.min(Math.round((this.spent / this.amount) * 100), 100);
+  return Math.min(Math.round(((this.spent || 0) / this.amount) * 100), 100);
 });
 
 // Include virtuals in JSON output

@@ -11,20 +11,16 @@ const getExpenses = async (req, res, next) => {
       page = 1,
       limit = 20,
       sort = '-date',
-      type,
       category,
       startDate,
       endDate,
       search,
-      paymentMethod,
     } = req.query;
 
     // Build filter query
-    const filter = { user: req.user.id };
+    const filter = { userId: req.user.id };
 
-    if (type) filter.type = type;
     if (category) filter.category = category;
-    if (paymentMethod) filter.paymentMethod = paymentMethod;
 
     // Date range filter
     if (startDate || endDate) {
@@ -33,11 +29,11 @@ const getExpenses = async (req, res, next) => {
       if (endDate) filter.date.$lte = new Date(endDate);
     }
 
-    // Text search on title/description
+    // Text search on description
     if (search) {
       filter.$or = [
-        { title: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
+        { tags: { $regex: search, $options: 'i' } },
       ];
     }
 
@@ -45,7 +41,6 @@ const getExpenses = async (req, res, next) => {
 
     const [expenses, total] = await Promise.all([
       Expense.find(filter)
-        .populate('category', 'name icon color')
         .sort(sort)
         .skip(skip)
         .limit(parseInt(limit)),
@@ -74,14 +69,12 @@ const getExpenses = async (req, res, next) => {
  */
 const createExpense = async (req, res, next) => {
   try {
-    req.body.user = req.user.id;
+    req.body.userId = req.user.id;
     const expense = await Expense.create(req.body);
-
-    const populated = await expense.populate('category', 'name icon color');
 
     res.status(201).json({
       success: true,
-      data: populated,
+      data: expense,
     });
   } catch (error) {
     next(error);
@@ -103,7 +96,7 @@ const updateExpense = async (req, res, next) => {
     }
 
     // Make sure user owns the expense
-    if (expense.user.toString() !== req.user.id) {
+    if (expense.userId.toString() !== req.user.id) {
       res.status(403);
       throw new Error('Not authorized to update this expense');
     }
@@ -111,7 +104,7 @@ const updateExpense = async (req, res, next) => {
     expense = await Expense.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
-    }).populate('category', 'name icon color');
+    });
 
     res.status(200).json({
       success: true,
@@ -136,7 +129,7 @@ const deleteExpense = async (req, res, next) => {
       throw new Error('Expense not found');
     }
 
-    if (expense.user.toString() !== req.user.id) {
+    if (expense.userId.toString() !== req.user.id) {
       res.status(403);
       throw new Error('Not authorized to delete this expense');
     }

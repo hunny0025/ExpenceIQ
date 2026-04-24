@@ -2,46 +2,31 @@ const mongoose = require('mongoose');
 
 const expenseSchema = new mongoose.Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
-    },
-    title: {
-      type: String,
-      required: [true, 'Please provide an expense title'],
-      trim: true,
-      maxlength: [100, 'Title cannot exceed 100 characters'],
+      index: true,
     },
     amount: {
       type: Number,
       required: [true, 'Please provide an amount'],
       min: [0.01, 'Amount must be greater than 0'],
     },
-    type: {
-      type: String,
-      enum: ['expense', 'income'],
-      default: 'expense',
-    },
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
-      required: [true, 'Please select a category'],
-    },
-    date: {
-      type: Date,
-      default: Date.now,
-      required: true,
+      type: String,
+      required: [true, 'Please provide a category'],
+      trim: true,
     },
     description: {
       type: String,
       trim: true,
       maxlength: [500, 'Description cannot exceed 500 characters'],
     },
-    paymentMethod: {
-      type: String,
-      enum: ['cash', 'credit_card', 'debit_card', 'upi', 'net_banking', 'other'],
-      default: 'cash',
+    date: {
+      type: Date,
+      default: Date.now,
+      required: true,
     },
     tags: [
       {
@@ -49,13 +34,9 @@ const expenseSchema = new mongoose.Schema(
         trim: true,
       },
     ],
-    isRecurring: {
-      type: Boolean,
-      default: false,
-    },
-    recurringFrequency: {
+    receiptUrl: {
       type: String,
-      enum: ['daily', 'weekly', 'monthly', 'yearly'],
+      default: '',
     },
   },
   {
@@ -64,8 +45,7 @@ const expenseSchema = new mongoose.Schema(
 );
 
 // Compound indexes for common query patterns
-expenseSchema.index({ user: 1, date: -1 });
-expenseSchema.index({ user: 1, category: 1 });
-expenseSchema.index({ user: 1, type: 1, date: -1 });
+expenseSchema.index({ userId: 1, date: -1 });
+expenseSchema.index({ userId: 1, category: 1 });
 
 module.exports = mongoose.model('Expense', expenseSchema);

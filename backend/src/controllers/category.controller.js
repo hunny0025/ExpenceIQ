@@ -7,7 +7,7 @@ const Category = require('../models/Category.model');
  */
 const getCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find({ user: req.user.id }).sort('name');
+    const categories = await Category.find({ userId: req.user.id }).sort('name');
 
     res.status(200).json({
       success: true,
@@ -26,7 +26,7 @@ const getCategories = async (req, res, next) => {
  */
 const createCategory = async (req, res, next) => {
   try {
-    req.body.user = req.user.id;
+    req.body.userId = req.user.id;
     const category = await Category.create(req.body);
 
     res.status(201).json({
@@ -57,7 +57,7 @@ const updateCategory = async (req, res, next) => {
       throw new Error('Category not found');
     }
 
-    if (category.user.toString() !== req.user.id) {
+    if (category.userId.toString() !== req.user.id) {
       res.status(403);
       throw new Error('Not authorized to update this category');
     }
@@ -90,7 +90,7 @@ const deleteCategory = async (req, res, next) => {
       throw new Error('Category not found');
     }
 
-    if (category.user.toString() !== req.user.id) {
+    if (category.userId.toString() !== req.user.id) {
       res.status(403);
       throw new Error('Not authorized to delete this category');
     }

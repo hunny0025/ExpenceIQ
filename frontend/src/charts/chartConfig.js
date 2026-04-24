@@ -1,0 +1,90 @@
+/**
+ * chartConfig.js — Central Chart.js v4 registration and global defaults.
+ * Import once as a side-effect before rendering any chart.
+ * ChartWrapper does this automatically via `import './chartConfig'`.
+ */
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+  defaults,
+} from 'chart.js';
+
+import { COLORS, TYPOGRAPHY } from './tokens';
+
+ChartJS.register(
+  CategoryScale, LinearScale, PointElement, LineElement,
+  BarElement, Title, Tooltip, Legend, Filler,
+);
+
+defaults.font.family         = TYPOGRAPHY.fontFamily;
+defaults.color               = COLORS.textSecondary;
+defaults.animation           = { duration: 500, easing: 'easeInOutQuart' };
+defaults.responsive          = true;
+defaults.maintainAspectRatio = false;
+
+const sharedTickDefaults = {
+  color: COLORS.textSecondary,
+  font: { size: TYPOGRAPHY.sizes.tick, family: TYPOGRAPHY.fontFamily },
+  padding: 8,
+};
+const sharedGridDefaults = { color: COLORS.gridLine };
+
+['category', 'linear', 'time'].forEach((scaleType) => {
+  if (!defaults.scales[scaleType]) return;
+  Object.assign(defaults.scales[scaleType], {
+    grid: sharedGridDefaults,
+    ticks: sharedTickDefaults,
+    border: { color: COLORS.gridLine, dash: [4, 4] },
+  });
+});
+
+Object.assign(defaults.plugins.legend, {
+  display: true, position: 'top', align: 'end',
+  labels: {
+    color: COLORS.textPrimary,
+    font: { size: TYPOGRAPHY.sizes.legend, family: TYPOGRAPHY.fontFamily },
+    boxWidth: 10, boxHeight: 10, borderRadius: 3,
+    useBorderRadius: true, padding: 16,
+  },
+});
+
+Object.assign(defaults.plugins.tooltip, {
+  enabled: true,
+  backgroundColor: COLORS.tooltipBg,
+  titleColor: COLORS.textPrimary,
+  bodyColor: COLORS.textSecondary,
+  borderColor: COLORS.border,
+  borderWidth: 1, padding: 12, cornerRadius: 8,
+  titleFont: { size: TYPOGRAPHY.sizes.tooltip, family: TYPOGRAPHY.fontFamily, weight: String(TYPOGRAPHY.weights.semiBold) },
+  bodyFont:  { size: TYPOGRAPHY.sizes.tooltip, family: TYPOGRAPHY.fontFamily, weight: String(TYPOGRAPHY.weights.normal) },
+});
+
+export function buildLineOptions(overrides = {}) {
+  return {
+    plugins: { legend: {}, tooltip: {} },
+    scales: { x: { grid: { display: false } }, y: { beginAtZero: true } },
+    elements: {
+      line:  { tension: 0.4, borderWidth: 2 },
+      point: { radius: 3, hoverRadius: 6, borderWidth: 2 },
+    },
+    ...overrides,
+  };
+}
+
+export function buildBarOptions(overrides = {}) {
+  return {
+    plugins: { legend: {}, tooltip: {} },
+    scales: { x: { grid: { display: false } }, y: { beginAtZero: true } },
+    elements: { bar: { borderRadius: 6, borderSkipped: false } },
+    ...overrides,
+  };
+}
