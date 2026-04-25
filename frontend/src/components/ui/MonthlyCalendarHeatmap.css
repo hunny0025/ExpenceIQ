@@ -1,0 +1,95 @@
+.monthly-heatmap-container {
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.heatmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heatmap-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.heatmap-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.heatmap-wrapper {
+  /* Using width 100% and overflow auto in case the calendar wants to stretch wide */
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* React Calendar Heatmap Overrides */
+.react-calendar-heatmap {
+  width: 100%;
+}
+
+.react-calendar-heatmap text {
+  font-size: 8px;
+  fill: var(--color-text-secondary);
+}
+
+.react-calendar-heatmap rect {
+  rx: 2px;
+  ry: 2px;
+  stroke: var(--color-bg-card);
+  stroke-width: 1px;
+}
+
+/* 
+ * Spending Intensity Colors 
+ * 
+ * mapping requirement:
+ * - no spend -> white
+ * - low -> light blue
+ * - medium -> blue
+ * - high -> dark blue
+ */
+
+.react-calendar-heatmap .color-empty { background-color: #ffffff; fill: #ffffff; }
+.react-calendar-heatmap .color-scale-1 { background-color: #bfdbfe; fill: #bfdbfe; } /* Light Blue (Tailwind blue-200) */
+.react-calendar-heatmap .color-scale-2 { background-color: #3b82f6; fill: #3b82f6; } /* Blue (Tailwind blue-500) */
+.react-calendar-heatmap .color-scale-3 { background-color: #1e3a8a; fill: #1e3a8a; } /* Dark Blue (Tailwind blue-900) */
+
+/* Add a subtle hover effect for interactive tracking */
+.react-calendar-heatmap rect:hover {
+  transform: scale(0.95);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+  opacity: 0.9;
+}
+
+/* Legend Styling */
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.legend-squares {
+  display: flex;
+  gap: 4px;
+}
+
+.legend-square {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
