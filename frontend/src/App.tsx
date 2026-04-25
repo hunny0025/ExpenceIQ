@@ -3,6 +3,7 @@ import { Suspense, lazy } from 'react';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Lazy-load pages for better initial load performance
+const LandingPage   = lazy(() => import('./pages/LandingPage'));
 const LoginPage     = lazy(() => import('./pages/LoginPage'));
 const SignupPage    = lazy(() => import('./pages/SignupPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -37,6 +38,7 @@ export default function App() {
     <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* Public routes */}
+        <Route path="/"       element={<LandingPage />} />
         <Route path="/login"  element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
@@ -46,7 +48,7 @@ export default function App() {
         <Route path="/budget"    element={<ProtectedRoute><BudgetPage /></ProtectedRoute>} />
         <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
 
-        {/* Catch-all: redirect to /dashboard if logged in, else /login */}
+        {/* Catch-all: redirect to dashboard (which redirects to login if not authenticated) */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Suspense>

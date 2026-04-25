@@ -5,13 +5,12 @@
  *  File: backend/src/utils/seeder.js
  */
 
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import { User } from '../models/user.model.js';
-import { Category } from '../models/category.model.js';
-import { Expense } from '../models/expense.model.js';
-import { Budget } from '../models/budget.model.js';
-import { Notification } from '../models/notification.model.js';
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const User = require('../models/User.model');
+const Category = require('../models/Category.model');
+const Expense = require('../models/Expense.model');
+const Budget = require('../models/Budget.model');
 
 dotenv.config();
 
@@ -37,7 +36,7 @@ async function connectDB() {
 }
 
 async function seedUsers() {
-  const password = 'Test@1234'; // All seeded users use this password
+  const password = 'Test@1234';
   const users = [
     { name: 'Aryan Sharma', email: 'aryan@expenseiq.dev', password },
     { name: 'Priya Verma', email: 'priya@expenseiq.dev', password },
@@ -46,7 +45,7 @@ async function seedUsers() {
 
   const createdUsers = [];
   for (const u of users) {
-    const user = new User(u);
+    const user = new User({ name: u.name, email: u.email, passwordHash: u.password });
     await user.save();
     createdUsers.push(user);
   }
@@ -55,24 +54,21 @@ async function seedUsers() {
 
 async function seedCategories(users) {
   const commonCategories = [
-    { name: 'Food & Dining', icon: 'utensils', type: 'expense' },
-    { name: 'Housing & Rent', icon: 'home', type: 'expense' },
-    { name: 'Transport', icon: 'car', type: 'expense' },
-    { name: 'Shopping', icon: 'shopping-bag', type: 'expense' },
-    { name: 'Health', icon: 'activity', type: 'expense' },
-    { name: 'Entertainment', icon: 'film', type: 'expense' },
-    { name: 'Personal', icon: 'user', type: 'expense' },
-    { name: 'Misc', icon: 'layers', type: 'expense' },
-    { name: 'Salary', icon: 'wallet', type: 'income' },
-    { name: 'Freelance', icon: 'briefcase', type: 'income' },
-    { name: 'Investment', icon: 'trending-up', type: 'income' }
+    { name: 'Food & Dining', icon: 'utensils', color: '#ef4444' },
+    { name: 'Housing & Rent', icon: 'home', color: '#3b82f6' },
+    { name: 'Transport', icon: 'car', color: '#10b981' },
+    { name: 'Shopping', icon: 'shopping-bag', color: '#f59e0b' },
+    { name: 'Health', icon: 'activity', color: '#ec4899' },
+    { name: 'Entertainment', icon: 'film', color: '#8b5cf6' },
+    { name: 'Personal', icon: 'user', color: '#6366f1' },
+    { name: 'Misc', icon: 'layers', color: '#64748b' }
   ];
 
   const categoryMap = {};
   for (const user of users) {
     categoryMap[user._id] = {};
     for (const cat of commonCategories) {
-      const created = await Category.create({ ...cat, user: user._id });
+      const created = await Category.create({ ...cat, userId: user._id });
       categoryMap[user._id][cat.name] = created;
     }
   }
@@ -82,22 +78,13 @@ async function seedCategories(users) {
 async function seedExpenses(users, categoryMap) {
   const totalExpenses = [];
   const now = new Date();
-  
+
   for (const user of users) {
-    const cats = categoryMap[user._id];
-    
+    // eslint-disable-next-line no-unused-vars
+    const _cats = categoryMap[user._id];
+
     for (let monthOffset = 0; monthOffset < 3; monthOffset++) {
       const monthDate = new Date(now.getFullYear(), now.getMonth() - monthOffset, 1);
-      
-      // Income
-      totalExpenses.push({
-        user: user._id,
-        category: cats['Salary']._id,
-        amount: 50000,
-        type: 'income',
-        description: 'Monthly Salary',
-        date: monthDate
-      });
 
       // Randomized Expenses
       const expenseCats = ['Food & Dining', 'Housing & Rent', 'Transport', 'Shopping', 'Health', 'Entertainment', 'Personal', 'Misc'];
@@ -105,10 +92,9 @@ async function seedExpenses(users, categoryMap) {
         const catName = expenseCats[Math.floor(Math.random() * expenseCats.length)];
         const amount = Math.floor(Math.random() * 2000) + 100;
         totalExpenses.push({
-          user: user._id,
-          category: cats[catName]._id,
+          userId: user._id,
+          category: catName,
           amount,
-          type: 'expense',
           description: `Sample ${catName} expense`,
           date: new Date(monthDate.getTime() + Math.random() * 2592000000)
         });
@@ -129,36 +115,15 @@ async function seedBudgets(users, categoryMap) {
     const cats = categoryMap[user._id];
     for (const [catName, limit] of Object.entries(BUDGET_LIMITS)) {
       const cat = cats[catName];
-      
-      const agg = await Expense.aggregate([
-        { $match: { user: user._id, category: cat._id, type: 'expense', 
-          date: { $gte: new Date(currentYear, currentMonth - 1, 1), $lte: new Date(currentYear, currentMonth, 0) } 
-        } },
-        { $group: { _id: null, total: { $sum: '$amount' } } }
-      ]);
-      const spent = agg.length > 0 ? agg[0].total : 0;
 
       await Budget.create({
-        user: user._id,
-        category: cat._id,
+        userId: user._id,
+        categoryId: cat._id,
         amount: limit,
         month: currentMonth,
-        year: currentYear,
-        spent
+        year: currentYear
       });
     }
-  }
-}
-
-async function seedNotifications(users) {
-  for (const user of users) {
-    await Notification.create({
-      user: user._id,
-      title: 'Welcome to ExpenseIQ! 🎉',
-      message: 'Your account is set up with sample data. Start tracking your expenses today.',
-      type: 'system',
-      severity: 'info'
-    });
   }
 }
 
@@ -168,8 +133,7 @@ async function clearDatabase() {
     User.deleteMany({}),
     Category.deleteMany({}),
     Expense.deleteMany({}),
-    Budget.deleteMany({}),
-    Notification.deleteMany({}),
+    Budget.deleteMany({})
   ]);
   console.log('  ✅ Database cleared\n');
 }
@@ -182,18 +146,15 @@ async function runSeeder() {
 
     console.log('📌 Seeding Users...');
     const users = await seedUsers();
-    
+
     console.log('📌 Seeding Categories...');
     const categoryMap = await seedCategories(users);
-    
+
     console.log('📌 Seeding Expenses...');
     await seedExpenses(users, categoryMap);
-    
+
     console.log('📌 Seeding Budgets...');
     await seedBudgets(users, categoryMap);
-    
-    console.log('📌 Seeding Notifications...');
-    await seedNotifications(users);
 
     console.log('✅ Seed Complete!');
     process.exit(0);
