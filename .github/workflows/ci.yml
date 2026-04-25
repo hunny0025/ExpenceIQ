@@ -122,65 +122,8 @@ jobs:
         run: lhci autorun
 
   # ─────────────────────────────────────────────────────
-  # 4. Deploy to Vercel (staging branch → preview)
+  # NOTE: Vercel deployment is handled automatically by
+  # Vercel's GitHub App integration (no CI secrets needed).
+  # Connect at: https://vercel.com/new → Import Git Repository
   # ─────────────────────────────────────────────────────
-  deploy-preview:
-    name: Deploy — Vercel Preview
-    runs-on: ubuntu-latest
-    needs: [backend, frontend]
-    continue-on-error: true   # skips gracefully when VERCEL_TOKEN not yet set
-    if: github.ref == 'refs/heads/staging'
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
-
-      - name: Deploy to Vercel (Preview)
-        working-directory: ./frontend
-        run: |
-          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --token=${{ secrets.VERCEL_TOKEN }}
-          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-  # ─────────────────────────────────────────────────────
-  # 5. Deploy to Vercel (main branch → production)
-  # ─────────────────────────────────────────────────────
-  deploy-production:
-    name: Deploy — Vercel Production
-    runs-on: ubuntu-latest
-    needs: [backend, frontend, lighthouse]
-    continue-on-error: true   # skips gracefully when VERCEL_TOKEN not yet set
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
-
-      - name: Deploy to Vercel (Production)
-        working-directory: ./frontend
-        run: |
-          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
