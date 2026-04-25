@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
+import AddExpenseModal from '../components/AddExpenseModal';
 import { 
   Receipt, Search, Filter, Plus, ChevronUp, ChevronDown, 
   MoreVertical, Edit2, Trash2, Calendar, Tag, CreditCard,
@@ -7,8 +8,8 @@ import {
 } from 'lucide-react';
 import '../dashboard.css';
 
-// Mock Data
-const MOCK_EXPENSES = [
+// Initial Mock Data
+const INITIAL_EXPENSES = [
   { id: 1, date: '2024-04-24', category: 'Food', description: 'Gourmet Dinner at Taj', amount: 4500 },
   { id: 2, date: '2024-04-23', category: 'Transport', description: 'Uber to Office', amount: 350 },
   { id: 3, date: '2024-04-22', category: 'Rent', description: 'Monthly Apartment Rent', amount: 25000 },
@@ -29,9 +30,11 @@ type SortConfig = {
 } | null;
 
 export default function ExpensesPage() {
+  const [expenses, setExpenses] = useState(INITIAL_EXPENSES);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [sortConfig, setSortConfig] = useState<SortConfig>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Sorting Handler
   const handleSort = (key: string) => {
@@ -42,9 +45,14 @@ export default function ExpensesPage() {
     setSortConfig({ key, direction });
   };
 
+  // Add Expense Handler
+  const handleAddExpense = (newExpense: any) => {
+    setExpenses(prev => [newExpense, ...prev]);
+  };
+
   // Filtered and Sorted Expenses
   const processedExpenses = useMemo(() => {
-    let filtered = MOCK_EXPENSES.filter(exp => {
+    let filtered = expenses.filter(exp => {
       const matchesSearch = exp.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           exp.category.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = activeCategory === 'All' || exp.category === activeCategory;
@@ -63,7 +71,7 @@ export default function ExpensesPage() {
     }
 
     return filtered;
-  }, [searchTerm, activeCategory, sortConfig]);
+  }, [expenses, searchTerm, activeCategory, sortConfig]);
 
   const getCategoryColor = (cat: string) => {
     switch (cat) {
@@ -86,11 +94,12 @@ export default function ExpensesPage() {
             Expense <span style={{ color: '#a78bfa' }}>Tracker</span>
           </h1>
           <p style={{ margin: '8px 0 0', color: '#6b7280', fontWeight: 600, fontSize: '15px' }}>
-            You have {MOCK_EXPENSES.length} total transactions this month.
+            You have {expenses.length} total transactions this month.
           </p>
         </div>
         
         <button 
+          onClick={() => setIsModalOpen(true)}
           style={{ 
             display: 'flex', alignItems: 'center', gap: '8px', 
             background: '#7c3aed', color: 'white', border: 'none',
@@ -185,7 +194,7 @@ export default function ExpensesPage() {
                         <button className="action-btn" title="Edit Expense">
                           <Edit2 size={16} />
                         </button>
-                        <button className="action-btn delete" title="Delete Expense">
+                        <button className="action-btn delete" title="Delete Expense" onClick={() => setExpenses(prev => prev.filter(e => e.id !== exp.id))}>
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -206,6 +215,12 @@ export default function ExpensesPage() {
           </tbody>
         </table>
       </div>
+
+      <AddExpenseModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onAdd={handleAddExpense} 
+      />
     </DashboardLayout>
   );
 }
