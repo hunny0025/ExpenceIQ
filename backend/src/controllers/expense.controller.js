@@ -146,4 +146,71 @@ const deleteExpense = async (req, res, next) => {
   }
 };
 
-module.exports = { getExpenses, createExpense, updateExpense, deleteExpense };
+/**
+ * @desc    Search expenses for logged-in user
+ * @route   GET /api/expenses/search
+ * @access  Private
+ */
+const searchExpenses = async (req, res, next) => {
+  try {
+    const {
+      q,
+      page = 1,
+      limit = 20,
+      sort = '-date',
+      category,
+      startDate,
+      endDate,
+    } = req.query;
+
+    if (!q) {
+      return res.status(400).json({
+        success: false,
+        message: 'Search query (q) is required',
+      });
+    }
+
+    // Build filter query
+    const filter = { userId: req.user.id };
+
+    // Text search on description and tags
+    filter.$or = [
+      { description: { $regex: q, $options: 'i' } },
+      { tags: { $regex: q, $options: 'i' } },
+    ];
+
+    if (category) filter.category = category;
+
+    // Date range filter
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    }
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const [expenses, total] = await Promise.all([
+      Expense.find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(parseInt(limit)),
+      Expense.countDocuments(filter),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: expenses,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit)),
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getExpenses, searchExpenses, createExpense, updateExpense, deleteExpense };
