@@ -106,16 +106,23 @@ export default function AdvancedFilterBar({
      ──────────────────────────────────────────────────────────────── */
   const [catOpen, setCatOpen] = useState(false);
   const catRef = useRef<HTMLDivElement>(null);
+  
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
 
   // Close on outside click
   useEffect(() => {
-    if (!catOpen) return;
     const handler = (e: MouseEvent) => {
-      if (catRef.current && !catRef.current.contains(e.target as Node)) setCatOpen(false);
+      if (catOpen && catRef.current && !catRef.current.contains(e.target as Node)) {
+        setCatOpen(false);
+      }
+      if (sortOpen && sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [catOpen]);
+  }, [catOpen, sortOpen]);
 
   const toggleCategory = (cat: string) => {
     const set = new Set(filters.categories);
@@ -284,18 +291,43 @@ export default function AdvancedFilterBar({
       </div>
 
       {/* ── Sort ──────────────────────────────────────────────── */}
-      <div className="afb-field" style={{ minWidth: 170 }}>
+      <div className="afb-field afb-dropdown-container" style={{ minWidth: 170 }} ref={sortRef}>
         <span className="afb-label">Sort By</span>
-        <select
-          className="afb-select"
-          value={sortValue}
-          onChange={(e) => handleSortChange(e.target.value)}
-          aria-label="Sort expenses by"
+        <div
+          className={`afb-select ${sortOpen ? 'afb-select--open' : ''}`}
+          role="listbox"
+          tabIndex={0}
+          onClick={() => setSortOpen((v) => !v)}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSortOpen((v) => !v); } }}
         >
-          {SORT_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+          {SORT_OPTIONS.find(o => o.value === sortValue)?.label || 'Sort By'}
+        </div>
+
+        {sortOpen && (
+          <div className="afb-multiselect__dropdown" role="listbox">
+            {SORT_OPTIONS.map((o) => {
+              const active = o.value === sortValue;
+              return (
+                <button
+                  key={o.value}
+                  type="button"
+                  className={`afb-multiselect__option ${active ? 'afb-multiselect__option--selected' : ''}`}
+                  role="option"
+                  aria-selected={active}
+                  onClick={() => {
+                    handleSortChange(o.value);
+                    setSortOpen(false);
+                  }}
+                >
+                  <span className={`afb-multiselect__check ${active ? 'afb-multiselect__check--active' : ''}`} style={{ visibility: active ? 'visible' : 'hidden' }}>
+                    {active && '✓'}
+                  </span>
+                  {o.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* ── Reset ─────────────────────────────────────────────── */}

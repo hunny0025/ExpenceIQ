@@ -19,3 +19,6 @@ export type {
   SortField,
   SortDirection,
 } from './AdvancedFilterBar';
+
+export { default as BudgetProgressCard } from './BudgetProgressCard';
+export type { BudgetProgressCardProps }  from './BudgetProgressCard';
