@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import AddExpenseModal from '../components/AddExpenseModal';
+import ExportButton from '../components/ui/ExportButton';
 import { 
   Receipt, Search, Filter, Plus, ChevronUp, ChevronDown, 
   MoreVertical, Edit2, Trash2, Calendar, Tag, CreditCard,
@@ -73,6 +74,14 @@ export default function ExpensesPage() {
     return filtered;
   }, [expenses, searchTerm, activeCategory, sortConfig]);
 
+  const activeDateRange = useMemo(() => {
+    if (processedExpenses.length === 0) return undefined;
+    const dates = processedExpenses.map(e => new Date(e.date).getTime());
+    const minDate = new Date(Math.min(...dates));
+    const maxDate = new Date(Math.max(...dates));
+    return { startDate: minDate, endDate: maxDate };
+  }, [processedExpenses]);
+
   const getCategoryColor = (cat: string) => {
     switch (cat) {
       case 'Food': return { bg: 'rgba(244, 63, 94, 0.1)', text: '#fb7185' };
@@ -98,19 +107,26 @@ export default function ExpensesPage() {
           </p>
         </div>
         
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          style={{ 
-            display: 'flex', alignItems: 'center', gap: '8px', 
-            background: '#7c3aed', color: 'white', border: 'none',
-            padding: '12px 24px', borderRadius: '16px', fontWeight: 800,
-            fontSize: '14px', cursor: 'pointer', transition: 'all 0.3s',
-            boxShadow: '0 8px 24px rgba(124, 58, 237, 0.3)'
-          }}
-        >
-          <Plus size={20} strokeWidth={3} />
-          <span>New Expense</span>
-        </button>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <ExportButton 
+            data={processedExpenses} 
+            dateRange={activeDateRange}
+            filenamePrefix="expenses" 
+          />
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '8px', 
+              background: '#7c3aed', color: 'white', border: 'none',
+              padding: '12px 24px', borderRadius: '16px', fontWeight: 800,
+              fontSize: '14px', cursor: 'pointer', transition: 'all 0.3s',
+              boxShadow: '0 8px 24px rgba(124, 58, 237, 0.3)'
+            }}
+          >
+            <Plus size={20} strokeWidth={3} />
+            <span>New Expense</span>
+          </button>
+        </div>
       </div>
 
       {/* Filters Section */}
