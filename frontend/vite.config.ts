@@ -16,14 +16,16 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
       sourcemap: mode !== 'production',   // source maps in staging/dev only
-      rollupOptions: {
+      rolldownOptions: {
         output: {
           // Split vendor chunks for better caching on Vercel CDN
-          manualChunks: {
-            react:      ['react', 'react-dom'],
-            router:     ['react-router-dom'],
-            chartjs:    ['chart.js', 'react-chartjs-2'],
-            sentry:     ['@sentry/react'],
+          codeSplitting: {
+            groups: [
+              { name: 'react',   test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,   priority: 4 },
+              { name: 'router',  test: /[\\/]node_modules[\\/]react-router/,              priority: 3 },
+              { name: 'chartjs', test: /[\\/]node_modules[\\/](chart\.js|react-chartjs)/, priority: 2 },
+              { name: 'sentry',  test: /[\\/]node_modules[\\/]@sentry/,                   priority: 1 },
+            ],
           },
         },
       },

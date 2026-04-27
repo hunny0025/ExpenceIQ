@@ -126,3 +126,15 @@ export function buildBarOptions(overrides: Partial<ChartOptions<'bar'>> = {}): C
     ...overrides,
   } as ChartOptions<'bar'>;
 }
+
+/** Base options for a dark-theme pie/doughnut chart. Spread overrides to customise. */
+export function buildPieOptions(overrides: Partial<ChartOptions<'pie'>> = {}): ChartOptions<'pie'> {
+  return {
+    plugins: {
+      legend: { position: 'bottom', align: 'center' },
+      tooltip: {},
+    },
+    cutout: '0%',
+    ...overrides,
+  } as ChartOptions<'pie'>;
+}
