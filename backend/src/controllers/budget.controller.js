@@ -25,14 +25,14 @@ const getBudgets = async (req, res, next) => {
     }).populate('categoryId', 'name icon color');
 
     // Calculate spent for each budget from expenses
-    const categoryNames = budgets.map(b => b.categoryId.name);
+    const categoryIds = budgets.map(b => b.categoryId._id);
     const userIdObj = new mongoose.Types.ObjectId(req.user.id.toString());
 
     const expenses = await Expense.aggregate([
       {
         $match: {
           userId: userIdObj,
-          category: { $in: categoryNames },
+          category: { $in: categoryIds },
           date: { $gte: startDate, $lte: endDate },
         },
       },
@@ -47,13 +47,13 @@ const getBudgets = async (req, res, next) => {
     // Map spent amounts to budgets
     const spentMap = {};
     expenses.forEach(exp => {
-      spentMap[exp._id] = exp.total;
+      spentMap[exp._id.toString()] = exp.total;
     });
 
     // Add spent to each budget
     const budgetsWithSpent = budgets.map(budget => {
-      const categoryName = budget.categoryId.name;
-      const spent = spentMap[categoryName] || 0;
+      const categoryId = budget.categoryId._id.toString();
+      const spent = spentMap[categoryId] || 0;
       return {
         _id: budget._id,
         categoryId: budget.categoryId,
@@ -125,13 +125,17 @@ const updateBudget = async (req, res, next) => {
     let budget = await Budget.findById(req.params.id);
 
     if (!budget) {
-      res.status(404);
-      throw new Error('Budget not found');
+      return res.status(404).json({
+        success: false,
+        message: 'Budget not found',
+      });
     }
 
     if (budget.userId.toString() !== req.user.id) {
-      res.status(403);
-      throw new Error('Not authorized to update this budget');
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to update this budget',
+      });
     }
 
     budget = await Budget.findByIdAndUpdate(req.params.id, req.body, {

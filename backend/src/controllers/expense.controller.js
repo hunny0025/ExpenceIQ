@@ -63,6 +63,39 @@ const getExpenses = async (req, res, next) => {
 };
 
 /**
+ * @desc    Get expense by ID
+ * @route   GET /api/expenses/:id
+ * @access  Private
+ */
+const getExpenseById = async (req, res, next) => {
+  try {
+    const expense = await Expense.findById(req.params.id);
+
+    if (!expense) {
+      return res.status(404).json({
+        success: false,
+        message: 'Expense not found',
+      });
+    }
+
+    // Make sure user owns the expense
+    if (expense.userId.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to view this expense',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: expense,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * @desc    Create new expense
  * @route   POST /api/expenses
  * @access  Private
@@ -91,14 +124,18 @@ const updateExpense = async (req, res, next) => {
     let expense = await Expense.findById(req.params.id);
 
     if (!expense) {
-      res.status(404);
-      throw new Error('Expense not found');
+      return res.status(404).json({
+        success: false,
+        message: 'Expense not found',
+      });
     }
 
     // Make sure user owns the expense
     if (expense.userId.toString() !== req.user.id) {
-      res.status(403);
-      throw new Error('Not authorized to update this expense');
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to update this expense',
+      });
     }
 
     expense = await Expense.findByIdAndUpdate(req.params.id, req.body, {
@@ -125,13 +162,17 @@ const deleteExpense = async (req, res, next) => {
     const expense = await Expense.findById(req.params.id);
 
     if (!expense) {
-      res.status(404);
-      throw new Error('Expense not found');
+      return res.status(404).json({
+        success: false,
+        message: 'Expense not found',
+      });
     }
 
     if (expense.userId.toString() !== req.user.id) {
-      res.status(403);
-      throw new Error('Not authorized to delete this expense');
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to delete this expense',
+      });
     }
 
     await expense.deleteOne();
@@ -213,4 +254,4 @@ const searchExpenses = async (req, res, next) => {
   }
 };
 
-module.exports = { getExpenses, searchExpenses, createExpense, updateExpense, deleteExpense };
+module.exports = { getExpenses, getExpenseById, searchExpenses, createExpense, updateExpense, deleteExpense };

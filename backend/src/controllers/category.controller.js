@@ -53,13 +53,17 @@ const updateCategory = async (req, res, next) => {
     let category = await Category.findById(req.params.id);
 
     if (!category) {
-      res.status(404);
-      throw new Error('Category not found');
+      return res.status(404).json({
+        success: false,
+        message: 'Category not found',
+      });
     }
 
     if (category.userId.toString() !== req.user.id) {
-      res.status(403);
-      throw new Error('Not authorized to update this category');
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to update this category',
+      });
     }
 
     category = await Category.findByIdAndUpdate(req.params.id, req.body, {
@@ -86,13 +90,17 @@ const deleteCategory = async (req, res, next) => {
     const category = await Category.findById(req.params.id);
 
     if (!category) {
-      res.status(404);
-      throw new Error('Category not found');
+      return res.status(404).json({
+        success: false,
+        message: 'Category not found',
+      });
     }
 
     if (category.userId.toString() !== req.user.id) {
-      res.status(403);
-      throw new Error('Not authorized to delete this category');
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to delete this category',
+      });
     }
 
     await category.deleteOne();

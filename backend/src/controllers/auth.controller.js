@@ -13,8 +13,10 @@ const register = async (req, res, next) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      res.status(400);
-      throw new Error('User already exists with this email');
+      return res.status(400).json({
+        success: false,
+        message: 'User already exists with this email',
+      });
     }
 
     // Create user
@@ -47,25 +49,23 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Validate input
-    if (!email || !password) {
-      res.status(400);
-      throw new Error('Please provide email and password');
-    }
-
     // Find user and include passwordHash for comparison
     const user = await User.findOne({ email }).select('+passwordHash');
 
     if (!user) {
-      res.status(401);
-      throw new Error('Invalid credentials');
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials',
+      });
     }
 
     // Check password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      res.status(401);
-      throw new Error('Invalid credentials');
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials',
+      });
     }
 
     // Generate token
@@ -113,19 +113,16 @@ const refresh = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
 
-    if (!refreshToken) {
-      res.status(400);
-      throw new Error('Please provide refresh token');
-    }
-
     // Verify refresh token
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET);
 
     // Find user
     const user = await User.findById(decoded.id);
     if (!user) {
-      res.status(401);
-      throw new Error('User not found');
+      return res.status(401).json({
+        success: false,
+        message: 'User not found',
+      });
     }
 
     // Generate new access token
@@ -136,11 +133,10 @@ const refresh = async (req, res, next) => {
       data: { token },
     });
   } catch (error) {
-    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
-      res.status(401);
-      throw new Error('Invalid or expired refresh token');
-    }
-    next(error);
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid or expired refresh token',
+    });
   }
 };
 
