@@ -1,4 +1,5 @@
 const Expense = require('../models/Expense.model');
+const { checkBudgetThreshold } = require('../services/budgetAlert.service');
 
 /**
  * @desc    Get all expenses for logged-in user
@@ -105,6 +106,9 @@ const createExpense = async (req, res, next) => {
     req.body.userId = req.user.id;
     const expense = await Expense.create(req.body);
 
+    // Check budget threshold after creating expense
+    checkBudgetThreshold(expense);
+
     res.status(201).json({
       success: true,
       data: expense,
@@ -142,6 +146,9 @@ const updateExpense = async (req, res, next) => {
       new: true,
       runValidators: true,
     });
+
+    // Check budget threshold after updating expense
+    checkBudgetThreshold(expense);
 
     res.status(200).json({
       success: true,

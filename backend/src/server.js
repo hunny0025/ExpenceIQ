@@ -9,6 +9,10 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const { initializeBudgetAlertListeners } = require('./services/budgetAlert.service');
+
+// Initialize budget alert event listeners
+initializeBudgetAlertListeners();
 
 // Load environment variables
 dotenv.config();
