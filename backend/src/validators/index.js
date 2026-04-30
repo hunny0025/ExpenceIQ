@@ -21,7 +21,9 @@ const createExpenseSchema = Joi.object({
   amount: Joi.number().positive().required(),
   category: Joi.string().required(),
   description: Joi.string().max(500).allow(''),
-  date: Joi.date().iso(),
+  date: Joi.date().iso().max('now').messages({
+    'date.max': 'date cannot be in the future',
+  }),
   tags: Joi.array().items(Joi.string()),
   receiptUrl: Joi.string().uri().allow(''),
 });
@@ -30,7 +32,9 @@ const updateExpenseSchema = Joi.object({
   amount: Joi.number().positive(),
   category: Joi.string(),
   description: Joi.string().max(500).allow(''),
-  date: Joi.date().iso(),
+  date: Joi.date().iso().max('now').messages({
+    'date.max': 'date cannot be in the future',
+  }),
   tags: Joi.array().items(Joi.string()),
   receiptUrl: Joi.string().uri().allow(''),
 });
