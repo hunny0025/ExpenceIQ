@@ -47,5 +47,6 @@ const expenseSchema = new mongoose.Schema(
 // Compound indexes for common query patterns
 expenseSchema.index({ userId: 1, date: -1 });
 expenseSchema.index({ userId: 1, category: 1 });
+expenseSchema.index({ userId: 1, category: 1, date: 1 }); // For budget aggregation
 
 module.exports = mongoose.model('Expense', expenseSchema);
