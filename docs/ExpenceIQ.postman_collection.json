@@ -1,0 +1,916 @@
+{
+  "info": {
+    "name": "ExpenseIQ API",
+    "description": "Postman collection for ExpenseIQ - Personal Expense Tracker API\n\nBase URL: {{baseUrl}}\nAuthentication: Bearer token (JWT)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "GET Health Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          },
+          "response": [
+            {
+              "name": "Health Check Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/health",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["health"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"ExpenseIQ API is running\",\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"environment\": \"development\"\n}",
+              "header": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST Register",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Register Success",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "register"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"User registered successfully\",\n  \"data\": {\n    \"user\": {\n      \"_id\": \"65a1234567890abcdef12345\",\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\",\n      \"createdAt\": \"2024-01-15T10:30:00.000Z\"\n    },\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n  }\n}",
+              "header": []
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "register"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation error\",\n  \"errors\": [\n    {\n      \"field\": \"email\",\n      \"message\": \"Email is required\"\n    }\n  ]\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "POST Login",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Login Success",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "login"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"data\": {\n    \"user\": {\n      \"_id\": \"65a1234567890abcdef12345\",\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\"\n    },\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n  }\n}",
+              "header": []
+            },
+            {
+              "name": "Invalid Credentials",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "login"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid email or password\"\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "POST Refresh Token",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Refresh Success",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/auth/refresh",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "refresh"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Token refreshed successfully\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n  }\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "GET Me",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Current User",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/auth/me",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "me"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"_id\": \"65a1234567890abcdef12345\",\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\"\n  }\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "POST Logout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          },
+          "response": [
+            {
+              "name": "Logout Success",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/auth/logout",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "logout"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Logged out successfully\"\n}",
+              "header": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Expenses",
+      "item": [
+        {
+          "name": "GET All Expenses",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/expenses?page=1&limit=20&sort=-date&category=Food&startDate=2024-01-01&endDate=2024-01-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "20"},
+                {"key": "sort", "value": "-date"},
+                {"key": "category", "value": "Food"},
+                {"key": "startDate", "value": "2024-01-01"},
+                {"key": "endDate", "value": "2024-01-31"}
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Expenses Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/expenses?page=1&limit=20",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["expenses"],
+                  "query": [
+                    {"key": "page", "value": "1"},
+                    {"key": "limit", "value": "20"}
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"_id\": \"65a1234567890abcdef12346\",\n      \"userId\": \"65a1234567890abcdef12345\",\n      \"amount\": 150.75,\n      \"category\": \"Food\",\n      \"description\": \"Grocery shopping\",\n      \"date\": \"2024-01-15T10:30:00.000Z\",\n      \"tags\": [\"groceries\", \"weekly\"],\n      \"receiptUrl\": \"\",\n      \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n      \"updatedAt\": \"2024-01-15T10:30:00.000Z\"\n    },\n    {\n      \"_id\": \"65a1234567890abcdef12347\",\n      \"userId\": \"65a1234567890abcdef12345\",\n      \"amount\": 45.00,\n      \"category\": \"Transport\",\n      \"description\": \"Uber ride\",\n      \"date\": \"2024-01-14T08:00:00.000Z\",\n      \"tags\": [\"commute\"],\n      \"receiptUrl\": \"https://example.com/receipt.jpg\",\n      \"createdAt\": \"2024-01-14T08:00:00.000Z\",\n      \"updatedAt\": \"2024-01-14T08:00:00.000Z\"\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 20,\n    \"total\": 150,\n    \"pages\": 8\n  }\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "POST Create Expense",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/expenses",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 150.75,\n  \"category\": \"Food\",\n  \"description\": \"Grocery shopping\",\n  \"date\": \"2024-01-15\",\n  \"tags\": [\"groceries\", \"weekly\"],\n  \"receiptUrl\": \"https://example.com/receipt.jpg\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Create Expense Success",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/expenses",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["expenses"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Expense created successfully\",\n  \"data\": {\n    \"_id\": \"65a1234567890abcdef12346\",\n    \"userId\": \"65a1234567890abcdef12345\",\n    \"amount\": 150.75,\n    \"category\": \"Food\",\n    \"description\": \"Grocery shopping\",\n    \"date\": \"2024-01-15T00:00:00.000Z\",\n    \"tags\": [\"groceries\", \"weekly\"],\n    \"receiptUrl\": \"https://example.com/receipt.jpg\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-15T10:30:00.000Z\"\n  }\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "GET Search Expenses",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/expenses/search?q=grocery&page=1&limit=20&category=Food",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", "search"],
+              "query": [
+                {"key": "q", "value": "grocery"},
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "20"},
+                {"key": "category", "value": "Food"}
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Search Expenses Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/expenses/search?q=grocery&page=1&limit=20",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["expenses", "search"],
+                  "query": [
+                    {"key": "q", "value": "grocery"},
+                    {"key": "page", "value": "1"},
+                    {"key": "limit", "value": "20"}
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"_id\": \"65a1234567890abcdef12346\",\n      \"userId\": \"65a1234567890abcdef12345\",\n      \"amount\": 150.75,\n      \"category\": \"Food\",\n      \"description\": \"Grocery shopping\",\n      \"date\": \"2024-01-15T10:30:00.000Z\",\n      \"tags\": [\"groceries\", \"weekly\"],\n      \"receiptUrl\": \"\"\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 20,\n    \"total\": 1,\n    \"pages\": 1\n  }\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "GET Expense By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/expenses/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", ":id"]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Expense By ID Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/expenses/65a1234567890abcdef12346",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["expenses", "65a1234567890abcdef12346"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"_id\": \"65a1234567890abcdef12346\",\n    \"userId\": \"65a1234567890abcdef12345\",\n    \"amount\": 150.75,\n    \"category\": \"Food\",\n    \"description\": \"Grocery shopping\",\n    \"date\": \"2024-01-15T10:30:00.000Z\",\n    \"tags\": [\"groceries\", \"weekly\"],\n    \"receiptUrl\": \"\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-15T10:30:00.000Z\"\n  }\n}",
+              "header": []
+            },
+            {
+              "name": "Expense Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/expenses/65a1234567890abcdef99999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["expenses", "65a1234567890abcdef99999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": false,\n  \"message\": \"Expense not found\"\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "PUT Update Expense",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/expenses/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", ":id"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 175.50,\n  \"description\": \"Updated grocery shopping\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Update Expense Success",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{baseUrl}}/expenses/65a1234567890abcdef12346",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["expenses", "65a1234567890abcdef12346"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Expense updated successfully\",\n  \"data\": {\n    \"_id\": \"65a1234567890abcdef12346\",\n    \"userId\": \"65a1234567890abcdef12345\",\n    \"amount\": 175.50,\n    \"category\": \"Food\",\n    \"description\": \"Updated grocery shopping\",\n    \"date\": \"2024-01-15T10:30:00.000Z\",\n    \"tags\": [\"groceries\", \"weekly\"],\n    \"receiptUrl\": \"\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-15T12:00:00.000Z\"\n  }\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "DELETE Expense",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/expenses/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", ":id"]
+            }
+          },
+          "response": [
+            {
+              "name": "Delete Expense Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{baseUrl}}/expenses/65a1234567890abcdef12346",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["expenses", "65a1234567890abcdef12346"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Expense deleted successfully\"\n}",
+              "header": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "GET All Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Categories Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/categories",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["categories"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"_id\": \"65a1234567890abcdef12348\",\n      \"name\": \"Food\",\n      \"icon\": \"🍔\",\n      \"color\": \"#ff6b6b\",\n      \"userId\": \"65a1234567890abcdef12345\",\n      \"isDefault\": true,\n      \"createdAt\": \"2024-01-10T10:30:00.000Z\"\n    },\n    {\n      \"_id\": \"65a1234567890abcdef12349\",\n      \"name\": \"Transport\",\n      \"icon\": \"🚗\",\n      \"color\": \"#4ecdc4\",\n      \"userId\": \"65a1234567890abcdef12345\",\n      \"isDefault\": true,\n      \"createdAt\": \"2024-01-10T10:30:00.000Z\"\n    },\n    {\n      \"_id\": \"65a1234567890abcdef12350\",\n      \"name\": \"Entertainment\",\n      \"icon\": \"🎬\",\n      \"color\": \"#a55eea\",\n      \"userId\": \"65a1234567890abcdef12345\",\n      \"isDefault\": true,\n      \"createdAt\": \"2024-01-10T10:30:00.000Z\"\n    }\n  ]\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "POST Create Category",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Healthcare\",\n  \"icon\": \"💊\",\n  \"color\": \"#f368e0\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Create Category Success",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/categories",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["categories"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Category created successfully\",\n  \"data\": {\n    \"_id\": \"65a1234567890abcdef12351\",\n    \"name\": \"Healthcare\",\n    \"icon\": \"💊\",\n    \"color\": \"#f368e0\",\n    \"userId\": \"65a1234567890abcdef12345\",\n    \"isDefault\": false,\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\"\n  }\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "PUT Update Category",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", ":id"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Health\",\n  \"icon\": \"🏥\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Update Category Success",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{baseUrl}}/categories/65a1234567890abcdef12351",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["categories", "65a1234567890abcdef12351"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Category updated successfully\",\n  \"data\": {\n    \"_id\": \"65a1234567890abcdef12351\",\n    \"name\": \"Health\",\n    \"icon\": \"🏥\",\n    \"color\": \"#f368e0\",\n    \"userId\": \"65a1234567890abcdef12345\",\n    \"isDefault\": false,\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\"\n  }\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "DELETE Category",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", ":id"]
+            }
+          },
+          "response": [
+            {
+              "name": "Delete Category Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{baseUrl}}/categories/65a1234567890abcdef12351",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["categories", "65a1234567890abcdef12351"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Category deleted successfully\"\n}",
+              "header": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Budgets",
+      "item": [
+        {
+          "name": "GET All Budgets",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/budgets?month=1&year=2024",
+              "host": ["{{baseUrl}}"],
+              "path": ["budgets"],
+              "query": [
+                {"key": "month", "value": "1"},
+                {"key": "year", "value": "2024"}
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Budgets Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/budgets?month=1&year=2024",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["budgets"],
+                  "query": [
+                    {"key": "month", "value": "1"},
+                    {"key": "year", "value": "2024"}
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"_id\": \"65a1234567890abcdef12352\",\n      \"userId\": \"65a1234567890abcdef12345\",\n      \"categoryId\": \"65a1234567890abcdef12348\",\n      \"amount\": 500.00,\n      \"month\": 1,\n      \"year\": 2024,\n      \"spent\": 150.75,\n      \"remaining\": 349.25,\n      \"percentUsed\": 30,\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\"\n    },\n    {\n      \"_id\": \"65a1234567890abcdef12353\",\n      \"userId\": \"65a1234567890abcdef12345\",\n      \"categoryId\": \"65a1234567890abcdef12349\",\n      \"amount\": 200.00,\n      \"month\": 1,\n      \"year\": 2024,\n      \"spent\": 45.00,\n      \"remaining\": 155.00,\n      \"percentUsed\": 22,\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\"\n    }\n  ]\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "POST Create/Update Budget",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/budgets",
+              "host": ["{{baseUrl}}"],
+              "path": ["budgets"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": \"65a1234567890abcdef12348\",\n  \"amount\": 500.00,\n  \"month\": 1,\n  \"year\": 2024\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Upsert Budget Success",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/budgets",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["budgets"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Budget upserted successfully\",\n  \"data\": {\n    \"_id\": \"65a1234567890abcdef12352\",\n    \"userId\": \"65a1234567890abcdef12345\",\n    \"categoryId\": \"65a1234567890abcdef12348\",\n    \"amount\": 500.00,\n    \"month\": 1,\n    \"year\": 2024,\n    \"spent\": 150.75,\n    \"remaining\": 349.25,\n    \"percentUsed\": 30,\n    \"createdAt\": \"2024-01-01T00:00:00.000Z\"\n  }\n}",
+              "header": []
+            }
+          ]
+        },
+        {
+          "name": "PUT Update Budget",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/budgets/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["budgets", ":id"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 600.00\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Update Budget Success",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{baseUrl}}/budgets/65a1234567890abcdef12352",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["budgets", "65a1234567890abcdef12352"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Budget updated successfully\",\n  \"data\": {\n    \"_id\": \"65a1234567890abcdef12352\",\n    \"userId\": \"65a1234567890abcdef12345\",\n    \"categoryId\": \"65a1234567890abcdef12348\",\n    \"amount\": 600.00,\n    \"month\": 1,\n    \"year\": 2024,\n    \"spent\": 150.75,\n    \"remaining\": 449.25,\n    \"percentUsed\": 25,\n    \"createdAt\": \"2024-01-01T00:00:00.000Z\"\n  }\n}",
+              "header": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "GET Analytics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics"]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Analytics Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/analytics",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["analytics"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"totalExpenses\": 195.75,\n    \"totalBudget\": 700.00,\n    \"budgetUsage\": 27.96,\n    \"expenseCount\": 2,\n    \"categoryBreakdown\": [\n      {\n        \"category\": \"Food\",\n        \"total\": 150.75,\n        \"count\": 1,\n        \"percentage\": 77.02\n      },\n      {\n        \"category\": \"Transport\",\n        \"total\": 45.00,\n        \"count\": 1,\n        \"percentage\": 22.98\n      }\n    ],\n    \"monthlyTrend\": [\n      {\n        \"month\": \"January\",\n        \"total\": 195.75,\n        \"count\": 2\n      }\n    ],\n    \"topExpenses\": [\n      {\n        \"_id\": \"65a1234567890abcdef12346\",\n        \"amount\": 150.75,\n        \"category\": \"Food\",\n        \"description\": \"Grocery shopping\",\n        \"date\": \"2024-01-15T10:30:00.000Z\"\n      }\n    ]\n  }\n}",
+              "header": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "GET Export CSV",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reports/csv?startDate=2024-01-01&endDate=2024-01-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "csv"],
+              "query": [
+                {"key": "startDate", "value": "2024-01-01"},
+                {"key": "endDate", "value": "2024-01-31"}
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Export CSV Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/reports/csv?startDate=2024-01-01&endDate=2024-01-31",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["reports", "csv"],
+                  "query": [
+                    {"key": "startDate", "value": "2024-01-01"},
+                    {"key": "endDate", "value": "2024-01-31"}
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "body": "Date,Category,Description,Amount,Tags\n2024-01-15,Food,Grocery shopping,150.75,\"groceries,weekly\"\n2024-01-14,Transport,Uber ride,45.00,commute",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=expenses_2024-01-01_to_2024-01-31.csv"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "GET Export PDF",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reports/pdf?startDate=2024-01-01&endDate=2024-01-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "pdf"],
+              "query": [
+                {"key": "startDate", "value": "2024-01-01"},
+                {"key": "endDate", "value": "2024-01-31"}
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Export PDF Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/reports/pdf?startDate=2024-01-01&endDate=2024-01-31",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["reports", "pdf"],
+                  "query": [
+                    {"key": "startDate", "value": "2024-01-01"},
+                    {"key": "endDate", "value": "2024-01-31"}
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "binary",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/pdf"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=expenses_2024-01-01_to_2024-01-31.pdf"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
