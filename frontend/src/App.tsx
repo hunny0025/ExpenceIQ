@@ -10,6 +10,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const ExpensesPage  = lazy(() => import('./pages/ExpensesPage'));
 const BudgetPage    = lazy(() => import('./pages/BudgetPage'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const DevComponentsPage = lazy(() => import('./pages/DevComponentsPage'));
 
 // Full-screen spinner shown while a lazy chunk is loading
 function PageLoader() {
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/"       element={<LandingPage />} />
         <Route path="/login"  element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/dev/components" element={<DevComponentsPage />} />
 
         {/* Protected routes */}
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />

@@ -1,28 +1,47 @@
 /**
- * AmountBadge.tsx
+ * AmountBadge — displays a monetary value with colour-coded semantics.
  *
- * Displays a monetary value with:
- *  – green  for positive / income
- *  – red    for negative / expense
- *  – muted  for zero
+ * | Value    | Colour  | Arrow |
+ * |----------|---------|-------|
+ * | Positive | Green   | ▲     |
+ * | Negative | Red     | ▼     |
+ * | Zero     | Muted   | —     |
  *
- * Props:
- *   value      – number (positive = income, negative = expense)
- *   currency   – currency code, e.g. 'USD' (default: 'USD')
- *   locale     – BCP 47 locale   (default: 'en-US')
- *   size       – 'sm' | 'md' | 'lg'
- *   showSign   – always show +/- prefix (default: true for positive)
- *   className  – extra classes
+ * @example
+ * ```tsx
+ * <AmountBadge value={120.50} />
+ * <AmountBadge value={-45} currency="EUR" locale="de-DE" size="lg" />
+ * <AmountBadge value={0} showSign={false} />
+ * ```
  */
 
 import type { CSSProperties } from 'react';
 
+/** Props for the {@link AmountBadge} component. */
 export interface AmountBadgeProps {
-  value:      number;
-  currency?:  string;
-  locale?:    string;
-  size?:      'sm' | 'md' | 'lg';
-  showSign?:  boolean;
+  /** Monetary value. Positive → income (green), negative → expense (red). */
+  value: number;
+  /**
+   * ISO 4217 currency code.
+   * @default "USD"
+   */
+  currency?: string;
+  /**
+   * BCP 47 locale for number formatting.
+   * @default "en-US"
+   */
+  locale?: string;
+  /**
+   * Size variant.
+   * @default "md"
+   */
+  size?: 'sm' | 'md' | 'lg';
+  /**
+   * Whether to prefix the value with `+` or `−`.
+   * @default true
+   */
+  showSign?: boolean;
+  /** Extra CSS class on the root `<span>`. */
   className?: string;
 }
 
@@ -44,11 +63,10 @@ export default function AmountBadge({
   const isNegative = value < 0;
   const isZero     = value === 0;
 
-  // Semantic color
   const color =
-    isPositive ? '#10B981' :   // emerald-500
-    isNegative ? '#F43F5E' :   // rose-500
-    '#9CA3AF';                  // muted
+    isPositive ? '#10B981' :
+    isNegative ? '#F43F5E' :
+    '#9CA3AF';
 
   const bgColor =
     isPositive ? 'rgba(16,185,129,0.12)' :
@@ -60,14 +78,12 @@ export default function AmountBadge({
     isNegative ? 'rgba(244,63,94,0.25)'  :
     'rgba(156,163,175,0.20)';
 
-  // Format absolute value
   const formatted = new Intl.NumberFormat(locale, {
     style:    'currency',
     currency,
     maximumFractionDigits: 2,
   }).format(Math.abs(value));
 
-  // Build prefix: arrow + sign
   const arrow  = isPositive ? '▲' : isNegative ? '▼' : '—';
   const prefix =
     isZero  ? '' :

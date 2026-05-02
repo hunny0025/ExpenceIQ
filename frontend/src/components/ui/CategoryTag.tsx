@@ -1,25 +1,33 @@
 /**
- * CategoryTag.tsx
+ * CategoryTag — a pill-style label that maps a category string to a
+ * distinctive colour and emoji icon.
  *
- * A pill-style label that maps a category string to a distinctive color.
- * Falls back gracefully for unknown categories.
+ * Falls back gracefully for unknown categories using the "other" palette.
  *
- * Props:
- *   category  – string key (e.g. 'food', 'transport')
- *   size      – 'sm' | 'md' (default: 'md')
- *   className – extra classes
+ * @example
+ * ```tsx
+ * <CategoryTag category="food" />
+ * <CategoryTag category="transport" size="sm" />
+ * ```
  */
 
 import type { CSSProperties } from 'react';
 import { CATEGORY_COLORS } from '../../charts/tokens';
 
+/** Props for the {@link CategoryTag} component. */
 export interface CategoryTagProps {
-  category:   string;
-  size?:      'sm' | 'md';
+  /** Category key (case-insensitive), e.g. `"food"`, `"transport"`. */
+  category: string;
+  /**
+   * Size variant.
+   * @default "md"
+   */
+  size?: 'sm' | 'md';
+  /** Extra CSS class on the root `<span>`. */
   className?: string;
 }
 
-/** Category → emoji icon map */
+/** Category key → emoji icon mapping. */
 const CATEGORY_ICONS: Record<string, string> = {
   food:          '🍽️',
   transport:     '🚗',

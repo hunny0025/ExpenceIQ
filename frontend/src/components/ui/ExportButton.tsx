@@ -1,20 +1,51 @@
+/**
+ * ExportButton — downloads the provided data array as a CSV file.
+ *
+ * Uses {@link https://www.papaparse.com/ PapaParse} to serialise rows and
+ * generates a timestamped filename from the optional date range.
+ *
+ * @typeParam T - Row type (object keys become CSV column headers)
+ *
+ * @example
+ * ```tsx
+ * <ExportButton data={expenses} filenamePrefix="report" />
+ * <ExportButton data={rows} dateRange={{ startDate: new Date(), endDate: new Date() }} />
+ * ```
+ */
+
 import React, { useState } from 'react';
 import Papa from 'papaparse';
 import './ExportButton.css';
 
+/** Date range descriptor for filename generation. */
 export interface DateRange {
+  /** Start of the range (Date or ISO string). */
   startDate?: Date | string;
+  /** End of the range (Date or ISO string). */
   endDate?: Date | string;
 }
 
+/** Props for the {@link ExportButton} component. */
 export interface ExportButtonProps<T> {
+  /** Array of row objects to export. Column headers are derived from keys. */
   data: T[];
+  /** Optional date range used to build the filename. */
   dateRange?: DateRange | string;
+  /**
+   * Prefix for the generated CSV filename.
+   * @default "expenses"
+   */
   filenamePrefix?: string;
+  /** Extra CSS class on the root button element. */
   className?: string;
+  /**
+   * Label shown inside the button.
+   * @default "Export to CSV"
+   */
   buttonText?: string;
 }
 
+/** Formats a Date or ISO string into `YYYY-MM-DD`. Returns `""` for falsy input. */
 const formatDate = (date: Date | string | undefined): string => {
   if (!date) return '';
   const d = typeof date === 'string' ? new Date(date) : date;
@@ -37,11 +68,8 @@ export default function ExportButton<T>({
     setIsExporting(true);
 
     try {
-      // Generate CSV
-      // papaparse nicely handles arrays of objects automatically mapping keys to columns.
       const csv = Papa.unparse(data);
-      
-      // Determine filename
+
       let startStr = '';
       let endStr = '';
 
@@ -59,18 +87,15 @@ export default function ExportButton<T>({
       } else if (startStr) {
         filename += `_${startStr}`;
       } else {
-        // Fallback to today's date if no date range is provided
         filename += `_${formatDate(new Date())}`;
       }
-      
+
       filename += '.csv';
 
-      // Trigger download
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      
-      // We create a temporary unattached anchor element to trigger the download
-      const link = document.createElement('a'); 
-      if (link.download !== undefined) { 
+
+      const link = document.createElement('a');
+      if (link.download !== undefined) {
         const url = URL.createObjectURL(blob);
         link.setAttribute('href', url);
         link.setAttribute('download', filename);
@@ -90,23 +115,23 @@ export default function ExportButton<T>({
   const isDisabled = !data || data.length === 0 || isExporting;
 
   return (
-    <button 
+    <button
       className={`export-btn ${className} ${isDisabled ? 'disabled' : ''}`}
       onClick={handleExport}
       disabled={isDisabled}
       aria-label="Export data to CSV"
       title={isDisabled ? "No data to export" : "Export data to CSV"}
     >
-      <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        width="16" 
-        height="16" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         className="export-icon"
       >
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>

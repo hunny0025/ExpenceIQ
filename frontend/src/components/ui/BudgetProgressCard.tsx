@@ -1,29 +1,43 @@
 /**
- * BudgetProgressCard.tsx
- * 
- * Displays a clean, premium card with budget progress info.
- * 
- * Props:
- *   category:  Category name (e.g. "Groceries")
- *   budget:    Total budget amount
- *   spent:     Amount already spent
- *   locale?:   Locale for currency formatting (default: 'en-US')
- *   currency?: Currency string (default: 'USD')
- *   className?: Custom classes
- * 
- * Example usage:
+ * BudgetProgressCard — displays a category's spending vs. budget with a
+ * colour-coded progress bar.
+ *
+ * | % Spent | Colour |
+ * |---------|--------|
+ * | < 70%   | Green  |
+ * | 70–90%  | Amber  |
+ * | > 90%   | Red    |
+ *
+ * Handles edge cases: zero budget, over-budget spending, and negative values.
+ *
+ * @example
+ * ```tsx
  * <BudgetProgressCard category="Groceries" budget={500} spent={350} />
+ * <BudgetProgressCard category="Transport" budget={200} spent={250} currency="EUR" />
+ * ```
  */
 
-import React from 'react';
 import './BudgetProgressCard.css';
 
+/** Props for the {@link BudgetProgressCard} component. */
 export interface BudgetProgressCardProps {
+  /** Category name displayed in the card heading. */
   category: string;
+  /** Total budget amount. */
   budget: number;
+  /** Amount already spent. */
   spent: number;
+  /**
+   * BCP 47 locale for currency formatting.
+   * @default "en-US"
+   */
   locale?: string;
+  /**
+   * ISO 4217 currency code.
+   * @default "USD"
+   */
   currency?: string;
+  /** Extra CSS class on the root card element. */
   className?: string;
 }
 
@@ -35,23 +49,16 @@ export default function BudgetProgressCard({
   currency = 'USD',
   className = ''
 }: BudgetProgressCardProps) {
-  // Edge Case Handling: Budget is 0
   let percentage = 0;
   if (budget > 0) {
     percentage = (spent / budget) * 100;
   } else if (spent > 0) {
-    // If budget is 0 but we spent something, it's effectively 100% (max overage indicator)
     percentage = 100;
   }
 
   const isOverBudget = spent > budget;
-  
-  // Cap the visual progress bar width at 100% 
   const clampedPercentage = Math.min(Math.max(percentage, 0), 100);
 
-  // Status colors based on thresholds
-  // green (<70%), amber (70-90%), red (>90%)
-  // Using premium shades
   let fillGradient = 'linear-gradient(90deg, #10B981, #059669)'; // emerald
   if (percentage >= 90 || budget === 0) {
     fillGradient = 'linear-gradient(90deg, #F43F5E, #E11D48)'; // rose
@@ -67,7 +74,7 @@ export default function BudgetProgressCard({
     }).format(val);
   };
 
-  const remainingText = isOverBudget 
+  const remainingText = isOverBudget
     ? `${formatCurrency(Math.abs(spent - budget))} over budget`
     : `${formatCurrency(budget - Math.abs(spent))} left`;
 
@@ -83,14 +90,14 @@ export default function BudgetProgressCard({
           <span>{formatCurrency(budget)}</span>
         </div>
       </div>
-      
+
       <div className="track" role="progressbar" aria-valuenow={clampedPercentage} aria-valuemin={0} aria-valuemax={100}>
-        <div 
-          className="fill" 
-          style={{ 
+        <div
+          className="fill"
+          style={{
             width: `${clampedPercentage}%`,
             background: fillGradient
-          }} 
+          }}
         />
       </div>
 

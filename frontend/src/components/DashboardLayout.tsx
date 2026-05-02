@@ -1,6 +1,23 @@
+/**
+ * DashboardLayout — root layout shell for all authenticated pages.
+ *
+ * Composes the desktop {@link Sidebar}, {@link MobileNavigation},
+ * a top header bar with search / filters / {@link NotificationBell},
+ * and a scrollable content area.
+ *
+ * @example
+ * ```tsx
+ * <DashboardLayout>
+ *   <DashboardPage />
+ * </DashboardLayout>
+ * ```
+ */
+
 import React from 'react';
 import Sidebar from './Sidebar';
-import { Bell, Search, Filter } from 'lucide-react';
+import MobileNavigation from './MobileNavigation';
+import NotificationBell from './ui/NotificationBell';
+import { Search, Filter } from 'lucide-react';
 import '../dashboard.css';
 
 interface LayoutProps {
@@ -11,9 +28,12 @@ export default function DashboardLayout({ children }: LayoutProps) {
   return (
     <div className="dashboard-root">
       <Sidebar />
-      
+      <MobileNavigation />
+
       <div className="main-wrapper">
         <header className="header">
+          {/* Mobile hamburger is rendered by MobileNavigation (portal-free) */}
+
           <div className="search-box">
             <Search size={18} color="#6b7280" />
             <input 
@@ -37,19 +57,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
               <span>Filters</span>
             </button>
             
-            <button 
-              aria-label="View notifications"
-              style={{ 
-                background: 'transparent', border: 'none', color: '#6b7280', 
-                cursor: 'pointer', position: 'relative' 
-              }}
-            >
-              <Bell size={22} />
-              <span style={{ 
-                position: 'absolute', top: '2px', right: '2px', width: '8px', height: '8px', 
-                background: '#f43f5e', borderRadius: '50%', border: '2px solid #030712' 
-              }}></span>
-            </button>
+            <NotificationBell />
           </div>
         </header>
 

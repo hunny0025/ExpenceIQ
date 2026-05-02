@@ -1,9 +1,18 @@
+/**
+ * Sidebar — desktop-only vertical navigation bar.
+ *
+ * Renders the brand logo, navigation links (Dashboard, Expenses, Budget,
+ * Analytics), a user profile card, and a sign-out button. Hidden on
+ * viewports ≤768px where {@link MobileNavigation} takes over.
+ */
+
 import { LayoutDashboard, Receipt, Target, PieChart, LogOut, ChevronRight } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import '../dashboard.css';
 
+/** Shared nav item definitions (also used by MobileNavigation). */
 const navItems = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
   { name: 'Expenses', icon: Receipt, path: '/expenses' },
