@@ -108,18 +108,14 @@
 
 ---
 
-### BUG-07 — Sidebar Not Responsive on Mobile ❌ OPEN
+### BUG-07 — Sidebar Not Responsive on Mobile ✅Fixed
 | Field | Details |
 |-------|---------|
 | **Module** | Frontend |
 | **Endpoint** | All Pages |
 | **Severity** | P2 |
-| **Status** | ❌ Open |
+| **Status** | ✅Fixed|
 | **Steps to Reproduce** | 1. Open app in Chrome. 2. Open DevTools (F12). 3. Set device to iPhone SE (375px). 4. Navigate to any page |
-| **Expected** | Sidebar collapses, hamburger menu icon shown |
-| **Actual** | Sidebar stays open, overlaps main content, content cut off on right |
-| **Assign To** | Mehul (Frontend Developer) |
-
 ---
 
 ## Open Issues — Action Required
