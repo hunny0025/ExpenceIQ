@@ -1,0 +1,111 @@
+# Artillery Load Testing Configuration
+# Task: Simulate 50 concurrent users against ExpenseIQ API
+# Run: npx artillery run artillery.yml --output artillery-report.json
+
+config:
+  target: "https://expenseiq-api.onrender.com"
+  http:
+    timeout: 30
+  phases:
+    # Phase 1: Warm-up (10 users over 30s)
+    - duration: 30
+      arrivalRate: 10
+      name: "Warm-up"
+    # Phase 2: Ramp-up to 50 concurrent users
+    - duration: 60
+      arrivalRate: 50
+      name: "Peak Load — 50 concurrent users"
+    # Phase 3: Sustained load
+    - duration: 30
+      arrivalRate: 50
+      name: "Sustained"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  # Scenario 1: Health Check
+  - name: "Health Check"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+
+  # Scenario 2: Auth Flow — Register + Login
+  - name: "Auth Flow"
+    weight: 20
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "testuser@expenseiq.com"
+            password: "Test@1234"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+          expect:
+            - statusCode: 200
+
+  # Scenario 3: Get All Expenses (authenticated)
+  - name: "List Expenses"
+    weight: 40
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "testuser@expenseiq.com"
+            password: "Test@1234"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+      - get:
+          url: "/api/expenses?page=1&limit=10"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+
+  # Scenario 4: Create Expense
+  - name: "Create Expense"
+    weight: 20
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "testuser@expenseiq.com"
+            password: "Test@1234"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+      - post:
+          url: "/api/expenses"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            title: "Load Test Expense"
+            amount: 99.99
+            category: "Food"
+            date: "2026-05-01"
+          expect:
+            - statusCode: 201
+
+  # Scenario 5: Analytics Dashboard
+  - name: "Analytics"
+    weight: 10
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "testuser@expenseiq.com"
+            password: "Test@1234"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+      - get:
+          url: "/api/analytics/summary"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
